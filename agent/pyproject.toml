@@ -1,0 +1,6 @@
+[project]
+name = "agent"
+version = "0.1.0"
+description = "Cumulative agent built one chapter at a time, following bojieli/ai-agent-book"
+requires-python = ">=3.11"
+dependencies = ["openai>=1.40"]
