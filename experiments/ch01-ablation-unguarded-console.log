@@ -1,0 +1,39 @@
+2026-09-16 08:36:56,873 - INFO - Agent initialized with provider: kimi, model: kimi-k3, context mode: no_tool_calls, verbose: False
+2026-09-16 08:36:56,873 - INFO - Iteration 1/5
+2026-09-16 08:36:56,874 - INFO - Sending request to kimi API
+2026-09-16 08:37:55,445 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-16 08:37:55,540 - INFO - Terminal text response (no tool calls); stopping after iteration 1
+{
+  "exact_five_arms_present": false,
+  "all_context_contracts_passed": false,
+  "direct_real_api_evidence": true,
+  "experiment_execution_accepted": false,
+  "manuscript_behavior_claims": {
+    "full_baseline_correct": null,
+    "without_tool_definitions_no_tool_action": true,
+    "without_tool_results_repeated_action": null,
+    "without_history_repeated_action": null,
+    "without_reasoning_degraded": null,
+    "all_manuscript_behavior_claims_observed": false
+  },
+  "claim_qualifications": {
+    "without_tool_definitions_no_tool_action": "Vacuous by construction: the request carries no tool definitions, so the provider cannot emit a tool call. What varies between models is what they do instead -- see arm_outcomes.no_tool_calls, which separates claiming no figure the model was not given from an answer built on exchange rates it supplied itself.",
+    "without_reasoning_degraded": "Inferred from loss of canonical correctness, and note what this arm removes: retained reasoning is stripped from the history, while the model still reasons afresh on every turn. It therefore tests whether carrying prior reasoning forward matters, which it need not when each step is already determined by the previous observation. A stronger claim -- that the ablation produces contradictory decisions -- is not something the harness can force, and has not been observed."
+  },
+  "arm_outcomes": {
+    "no_tool_calls": "unsupported_numbers"
+  },
+  "arms_stating_unsupported_numbers": [
+    "no_tool_calls"
+  ],
+  "usage": {
+    "prompt_tokens": 247,
+    "completion_tokens": 1847,
+    "total_tokens": 2094,
+    "cached_prompt_tokens": 0,
+    "reasoning_tokens": 1440
+  }
+}
+Evidence: D:\AI Coding\Ai Agent Book\experiments\ch01-ablation-unguarded\evidence.json
+SHA-256: 397e7b25bf9292783c25e6810ce31e85a736ba8180c02923994b411b578d78e5
+Not promoted to validation/latest.json (canonical_run=False, accepted=False)
