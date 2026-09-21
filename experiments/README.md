@@ -8,10 +8,10 @@
 | 编号 | 实验 | 书里的目录 | 记录 |
 |:--:|---|---|---|
 | 1-1 | 上下文消融 | `chapter1/context/` | [ch01-ablation/](ch01-ablation/) |
-| 2-3 | KV Cache 与错误的上下文管理模式 | `chapter2/kv-cache/` | [ch02-kv-cache/](ch02-kv-cache/) |
 | 1-2 | Kimi 原生 Agent | `chapter1/web-search-agent/` | |
 | 1-3 | Deep Research 闭环 | `chapter1/search-codegen/` | |
 | 1-4 | 文生图工作流 vs 原生 | `chapter1/image-gen-workflow/` | |
+| 2-3 | KV Cache 与错误的上下文管理模式 | `chapter2/kv-cache/` | [ch02-kv-cache/](ch02-kv-cache/) |
 
 每个记录目录里应该有：
 - `run.md` — 用了什么 provider / 模型、跑了什么命令、花了多少 token
