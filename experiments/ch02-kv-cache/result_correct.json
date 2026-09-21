@@ -1,0 +1,254 @@
+{
+  "success": true,
+  "final_answer": "Here is a thorough analysis and summary of all projects in **chapter1** and **chapter2**.\n\n---\n\n## Chapter 1 Projects\n\n### 1. `chapter1/context` \u2014 Context-Aware AI Agent with Ablation Studies\n**(Experiment 1-1: The Key Role of Context)**\n\n#### Overview\nThis project implements a multi-tool, multi-provider AI agent designed to systematically study how different context components affect agent performance. It uses **ablation studies** to compare five context configurations, measuring not just whether a task completes, but whether the agent's answers are *grounded* in actual tool observations versus hallucinated from memory.\n\n#### Key Files\n| File | Purpose |\n|------|---------|\n| `main.py` | CLI entry point; supports interactive, single-task, and ablation-study modes |\n| `agent.py` | Core `ContextAwareAgent` with ReAct loop, tool registry, and context-mode handling |\n| `config.py` | Provider registry integration (shared `agentbook.providers`) and configuration |\n| `grounding.py` | Task-agnostic groundedness checker that detects unsupported numbers in answers |\n| `run_experiment_1_1.py` | Canonical experiment runner that persists credential-free API request/response evidence and validates context contracts |\n\n#### Architecture & Key Features\n\n**Multi-Provider Support**\n- Supports **Doubao** (ByteDance/Volcano Engine), **SiliconFlow** (Qwen), **Alibaba Cloud Model Studio / Bailian** (DashScope), **Kimi** (Moonshot), **DeepSeek**, and an **OpenRouter** universal fallback.\n- Provider resolution, key lookup, and model defaults are centralized in a shared `agentbook.providers` registry.\n\n**Five Context Modes (Ablation Arms)**\n1. **`FULL`** \u2014 Complete context: history, reasoning, tool definitions, and tool results\n2. **`NO_HISTORY`** \u2014 Fresh `[system, user]` every turn; no memory of prior tool calls\n3. **`NO_REASONING`** \u2014 Reasoning content (e.g., `reasoning_content` from thinking models) is stripped from history after generation\n4. **`NO_TOOL_CALLS`** \u2014 Tool definitions are removed from API requests; the model cannot invoke tools\n5. **`NO_TOOL_RESULTS`** \u2014 Tool calls are still made, but results are replaced with empty strings (or an optional marker) so the model is blind to outcomes\n\n**Available Tools**\n- `parse_pdf(url)` \u2014 Downloads and extracts text from PDFs (local or remote)\n- `convert_currency(amount, from, to)` \u2014 Converts currencies using static exchange rates with robust symbol parsing\n- `calculate(expression)` \u2014 Safe mathematical expression evaluator\n- `code_interpreter(code)` \u2014 Sandboxed Python execution for complex data processing\n\n**Groundedness Assessment (`grounding.py`)**\n- A novel verification layer that extracts revenue-scale numbers from the final answer and checks whether they appear in either:\n  - The original task text, or\n  - The tool observations actually sent to the model\n- Verdicts: `grounded`, `ungrounded`, `not_assessable`, `no_quantities`, `no_answer`\n- This prevents false positives where a model with no tools hallucinates plausible but fabricated exchange rates.\n\n**Experiment Runner (`run_experiment_1_1.py`)**\n- Runs all five ablation arms against a canonical currency-conversion task\n- **Context Contract Verification**: Inspects the actual API request payloads to prove each arm really did what it claimed (e.g., `tools_absent_every_turn`, `tool_results_hidden`, `only_static_prefix_and_user_every_turn`)\n- Produces an `evidence.json` manifest with SHA-256 checksums, git commit info, and per-arm behavior analysis\n- Only promotes to `validation/latest.json` if the run is canonical and accepted\n\n---\n\n### 2. `chapter1/image-gen-workflow` \u2014 Text-to-Image Workflow vs. Native Generation\n**(Experiment 1-4: Workflow vs. Native Image Generation)**\n\n#### Overview\nThis project compares three different routes for turning natural-language Chinese prompts into images. It specifically examines what happens at the **\"rewrite\" node** in a workflow pipeline versus native end-to-end image models, using both *specific* prompts (testing fidelity) and *broad* prompts (testing creative scene concretization).\n\n#### Key Files\n| File | Purpose |\n|------|---------|\n| `main.py` | Entry point; runs 5 requirements \u00d7 3 routes, builds evidence manifest |\n| `pipeline.py` | Three route implementations (workflow, native Gemini, native GPT-Image) |\n| `config.py` | API keys and model configuration for Kimi, DashScope, Gemini, OpenAI |\n| `evidence.py` | Manifest builder and offline validator for experiment evidence |\n\n#### Architecture & Key Features\n\n**Three Routes**\n1. **Workflow Route (`workflow`)**\n   - **Rewrite Node**: `kimi-k3` rewrites colloquial Chinese prompts into English comma-separated SD-style tags, negative prompts, and style notes\n   - **Generation Node**: DashScope `wan2.2-t2i-flash` (classic diffusion model) generates the image asynchronously\n   - The rewrite node performs *translation* (Chinese \u2192 English tags), *concretization* (\"sad\" \u2192 \"dark circles, cold blue screen glow\"), and *style decisions* (e.g., choosing anime style)\n\n2. **Native Route A (`native`)**\n   - **Model**: `gemini-3-pro-image` (book name: Nano Banana 2)\n   - Direct image generation from the raw Chinese prompt via Google's `response_modalities=[\"IMAGE\"]`\n\n3. **Native Route B (`native_gptimage`)**\n   - **Model**: `gpt-image-2` (GPT-Image 2)\n   - Direct image generation via OpenAI's `images/generations` endpoint\n\n**Test Requirements (5 Prompts)**\n| ID | Category | Prompt |\n|---|---|---|\n| `programmer-overtime` | Specific | \"Draw a programmer working overtime on the weekend, style a bit sad\" |\n| `windowsill-plant` | Specific | \"Draw a green plant on the windowsill, morning sunlight just shining in\" |\n| `headphone-poster` | Specific | \"Make a product poster for new noise-canceling headphones, tagline 'Clean even when alone at night', minimalist premium style\" |\n| `agi-programmer` | Broad | \"Draw a programmer's work scene after AGI is realized\" |\n| `future-city-morning` | Broad | \"Draw a picture of 'morning in a future city'\" |\n\n**Evidence & Validation**\n- Every API call is recorded with `call_id`, provider, model, endpoint, latency, usage, request/response IDs\n- Generated images are saved with SHA-256 hashes\n- `evidence.json` manifest validated offline for schema compliance\n- All artifacts are organized under `outputs/<run_id>/` and `validation/real_<run_id>/`\n\n**Key Findings (from README)**\n- For **specific** prompts, the workflow route can *lose* user-specified details (e.g., the headphone tagline was dropped because the rewrite node put `text, logo` into `negative_prompt`)\n- For **broad** prompts, the rewrite node adds useful narrative concretization (e.g., \"programmer sipping coffee while humanoid robot writes code\")\n- The strongest native models (GPT-Image 2, Gemini 3 Pro Image) can generate text-on-image and rich narrative detail in a single call, narrowing the gap that workflow rewrite nodes were originally designed to fill\n\n---\n\n## Chapter 2 Projects\n\n### 3. `chapter2/agent-skills-ppt` \u2014 Agent Skills for Presentation Generation\n**(Experiment 2-6: Using Agent Skills to Generate a Presentation from a Paper)**\n\n#### Overview\nThis project demonstrates **Agent Skills with progressive disclosure** \u2014 the idea that an agent should not load all domain knowledge into its system prompt at startup. Instead, it sees only a thin Skill catalog, then loads the full Skill documentation, sub-documents, and bundled scripts layer by layer as needed. It includes both a **legacy isomorphic demo** (for teaching without Anthropic access) and an **official canonical experiment** using the real Anthropic PPTX Skill executed by a skills-capable runtime.\n\n#### Key Files\n| File | Purpose |\n|------|---------|\n| `demo.py` | Legacy isomorphic demo using OpenAI (`gpt-5.6-luna`) and local Skill files |\n| `run_official_experiment.py` | Canonical runner using real Anthropic PPTX Skill + Claude Code or Kimi Code CLI |\n| `prepare_official_skill.py` | Fetches and verifies the pinned official Skill from Anthropic's repo (git hash `69c0b1a...`) |\n| `skills/pptx/scripts/generate_pptx.py` | Bundled python-pptx script that builds a real `.pptx` from a JSON outline |\n| `experiment_protocol.json` | Frozen acceptance gates (15+ validation criteria) |\n\n#### Architecture & Key Features\n\n**Progressive Disclosure (Three Layers)**\n1. **Layer 1 \u00b7 Metadata**: At startup, the system prompt contains only a thin catalog: each Skill's `name` + `description` (~hundreds of tokens)\n2. **Layer 2 \u00b7 Core Flow**: The agent calls `read_skill(\"pptx\")` to load the full `SKILL.md` (page plan, conventions, script interfaces)\n3. **Layer 3 \u00b7 Details**: The agent calls `read_skill_file(\"pptx\", \"reference.md\")` or reads script sources for implementation specifics\n4. **Execution**: The agent builds a slide outline JSON and calls `run_skill_script` \u2192 `generate_pptx.py` \u2192 real `.pptx` file\n\n**Two Runtime Modes**\n\n*Legacy Demo (`demo.py`)*\n- Isomorphic replacement for readers without Anthropic credentials\n- Uses OpenAI (`gpt-5.6-luna` by default, with OpenRouter fallback)\n- Implements `read_skill`, `read_skill_file`, and `run_skill_script` as Python functions\n- Includes an **offline mode** that deterministically replays the same tool path using a pre-written outline (`sample_outline.json`) \u2014 no API key required\n- Handles endpoint quirks: if direct OpenAI rejects `reasoning_effort` + function tools, it gracefully degrades to `reasoning_effort=\"none\"` and informs the user\n\n*Official Experiment (`run_official_experiment.py`)*\n- Pins the **official Anthropic PPTX Skill** to a specific git revision\n- Accepts either **Claude Code** (`--runtime claude`) or **Kimi Code CLI** (`--runtime kimi`) under a runtime-agnostic acceptance policy\n- Uses the real academic paper *Attention Is All You Need* (arXiv:1706.03762) as input\n- The agent must:\n  - Progressively disclose the `pptx` Skill\n  - Use the official `scripts/html2pptx.js` workflow\n  - Extract \u22653 visuals from the source PDF, embed them in the deck, and document them in `source_visuals/manifest.json`\n  - Generate a full-deck thumbnail, inspect it, and fix layout defects before finishing\n- Captures the raw `stream-json` event stream as immutable evidence\n\n**Validation (`validate_official_run.py`)**\n- Fail-closed validator with 15 gates:\n  - Slide count (10\u201315)\n  - Required sections (cover, background, method, results, conclusion)\n  - PDF visual extraction and byte-identical embedding verification\n  - PPTX validity (re-opened by `python-pptx` and rendered by LibreOffice)\n  - Thumbnail generation and inspection\n  - Credential leak scan in the event stream\n\n**Bundled Script (`generate_pptx.py`)**\n- Consumes a JSON outline: `{\"title\": \"...\", \"slides\": [{\"title\": \"...\", \"bullets\": [...]}]}`\n- Produces a professionally styled `.pptx` using `python-pptx`\n- Supports both library import (`build_presentation`) and CLI usage\n\n---\n\n## Comparative Summary\n\n| Dimension | `chapter1/context` | `chapter1/image-gen-workflow` | `chapter2/agent-skills-ppt` |\n|---|---|---|---|\n| **Core Concept** | Context ablation & groundedness | Workflow rewrite vs. native generation | Progressive disclosure of Agent Skills |\n| **Agent Pattern** | ReAct loop with tool calls | Sequential pipeline (rewrite \u2192 generate) | Tool-driven skill loading & script execution |\n| **Models Used** | Qwen, Doubao, Kimi, DeepSeek, etc. | Kimi k3, Wanx, Gemini 3 Pro Image, GPT-Image 2 | gpt-5.6-luna (demo); kimi-code/k3 or Claude Code (official) |\n| **Key Innovation** | Groundedness verifier + context contract validation | Quantifying what the rewrite node adds/loses | Isomorphic skill mechanism + official canonical reproduction |\n| **Evidence System** | `evidence.json` with API turn snapshots | `evidence.json` with image SHA-256s & call records | Raw stream JSON, git-pinned Skill, visual manifest, PPTX validation |\n| **Offline Capability** | No (requires LLM API) | No (requires image APIs) | Yes (`demo.py --offline` runs without any API key) |\n\nAll three projects are designed as **reproducible experiments** with rigorous evidence collection, schema-validated manifests, and SHA-256 checksums \u2014 consistent with the broader book's methodology of proving agent behavior through audit trails rather than anecdotal output alone.",
+  "iterations": 9,
+  "tool_calls": [
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "*",
+        "directory": "chapter1"
+      },
+      "timestamp": 1789978332.7357051
+    },
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "*",
+        "directory": "chapter2"
+      },
+      "timestamp": 1789978332.8272052
+    },
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "**/*.py",
+        "directory": "chapter1/context"
+      },
+      "timestamp": 1789978339.0124538
+    },
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "**/*.py",
+        "directory": "chapter1/image-gen-workflow"
+      },
+      "timestamp": 1789978339.0169349
+    },
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "**/*.py",
+        "directory": "chapter2/agent-skills-ppt"
+      },
+      "timestamp": 1789978339.0242524
+    },
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "*.py",
+        "directory": "chapter1/context"
+      },
+      "timestamp": 1789978348.8052335
+    },
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "*.py",
+        "directory": "chapter1/image-gen-workflow"
+      },
+      "timestamp": 1789978348.8108444
+    },
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "*.py",
+        "directory": "chapter2/agent-skills-ppt"
+      },
+      "timestamp": 1789978348.8188217
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/README.md"
+      },
+      "timestamp": 1789978359.0648808
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/main.py"
+      },
+      "timestamp": 1789978359.0680697
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/agent.py"
+      },
+      "timestamp": 1789978359.0698943
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/config.py"
+      },
+      "timestamp": 1789978359.0716872
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/grounding.py"
+      },
+      "timestamp": 1789978359.0742104
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/agent.py",
+        "offset": 300
+      },
+      "timestamp": 1789978372.0016098
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/run_experiment_1_1.py"
+      },
+      "timestamp": 1789978372.0585623
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/image-gen-workflow/README.md"
+      },
+      "timestamp": 1789978372.0614994
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/image-gen-workflow/main.py"
+      },
+      "timestamp": 1789978372.0645442
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/image-gen-workflow/pipeline.py"
+      },
+      "timestamp": 1789978372.067241
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/image-gen-workflow/pipeline.py",
+        "offset": 300
+      },
+      "timestamp": 1789978387.6203604
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/image-gen-workflow/config.py"
+      },
+      "timestamp": 1789978387.6331382
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/image-gen-workflow/evidence.py"
+      },
+      "timestamp": 1789978387.6366313
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/README.md"
+      },
+      "timestamp": 1789978387.6399117
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/demo.py"
+      },
+      "timestamp": 1789978402.0237107
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/run_official_experiment.py"
+      },
+      "timestamp": 1789978402.0255585
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/prepare_official_skill.py"
+      },
+      "timestamp": 1789978402.0266588
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/skills/pptx/scripts/generate_pptx.py"
+      },
+      "timestamp": 1789978402.027646
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/agent.py",
+        "offset": 700
+      },
+      "timestamp": 1789978429.1550608
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/run_experiment_1_1.py",
+        "offset": 500
+      },
+      "timestamp": 1789978429.156357
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/demo.py",
+        "offset": 300
+      },
+      "timestamp": 1789978429.1575437
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/run_official_experiment.py",
+        "offset": 200
+      },
+      "timestamp": 1789978429.158575
+    }
+  ],
+  "metrics": {
+    "ttft": 6.185206174850464,
+    "ttft_per_iteration": [
+      6.185206174850464,
+      6.176191806793213,
+      9.770496129989624,
+      10.229933500289917,
+      12.925180435180664,
+      15.5506911277771,
+      14.38198971748352,
+      27.125091314315796,
+      125.78271174430847
+    ],
+    "total_time": 228.41614699363708,
+    "iterations": 9,
+    "tool_calls": 30,
+    "cache_hits": 9,
+    "cache_misses": 0,
+    "prompt_tokens": 279394,
+    "completion_tokens": 5534,
+    "cached_tokens": 197120
+  },
+  "mode": "correct"
+}

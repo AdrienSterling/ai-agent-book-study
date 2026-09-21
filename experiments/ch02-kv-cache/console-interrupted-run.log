@@ -1,0 +1,149 @@
+2026-09-20 23:23:03,516 - INFO - Starting KV Cache Comparison Study
+2026-09-20 23:23:03,516 - INFO - Task: Please analyze and summarize all the projects in the chapter1 and chapter2 directories.
+For each project:
+1. Find all Python files
+2. Read the main files and understand the functionality
+3. Identify t...
+2026-09-20 23:23:03,516 - INFO - ================================================================================
+2026-09-20 23:23:03,516 - INFO - 
+============================================================
+2026-09-20 23:23:03,516 - INFO - Testing mode: correct
+2026-09-20 23:23:03,516 - INFO - ============================================================
+2026-09-20 23:23:03,779 - INFO - File tools initialized with root: D:\AI Coding\ai-agent-book
+2026-09-20 23:23:03,780 - INFO - Agent initialized with mode: correct, model: kimi-k2.6
+2026-09-20 23:23:10,075 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-20 23:23:10,094 - INFO - Iteration 1 - TTFT: 6.314s, Tokens: prompt=462, completion=121
+2026-09-20 23:23:10,095 - INFO - Executing tool: find with args: {'pattern': '**/*.py', 'directory': 'chapter1'}
+2026-09-20 23:23:10,132 - INFO - Executing tool: find with args: {'pattern': '**/*.py', 'directory': 'chapter2'}
+2026-09-20 23:23:12,936 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-20 23:23:12,937 - INFO - Iteration 2 - TTFT: 2.655s, Tokens: prompt=681, completion=71, cached=256
+2026-09-20 23:23:12,938 - INFO - Executing tool: find with args: {'pattern': '*', 'directory': 'chapter1'}
+2026-09-20 23:23:12,956 - INFO - Executing tool: find with args: {'pattern': '*', 'directory': 'chapter2'}
+2026-09-20 23:23:18,475 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-20 23:23:18,477 - INFO - Iteration 3 - TTFT: 5.433s, Tokens: prompt=5450, completion=152, cached=512
+2026-09-20 23:23:18,477 - INFO - Executing tool: find with args: {'pattern': '**/*.py', 'directory': 'chapter1/context'}
+2026-09-20 23:23:18,483 - INFO - Executing tool: find with args: {'pattern': '**/*.py', 'directory': 'chapter1/image-gen-workflow'}
+2026-09-20 23:23:18,486 - INFO - Executing tool: find with args: {'pattern': '**/*.py', 'directory': 'chapter2/agent-skills-ppt'}
+2026-09-20 23:23:23,725 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-20 23:23:23,727 - INFO - Iteration 4 - TTFT: 5.235s, Tokens: prompt=5757, completion=115, cached=4096
+2026-09-20 23:23:23,727 - INFO - Executing tool: find with args: {'pattern': '*.py', 'directory': 'chapter1/context'}
+2026-09-20 23:23:23,733 - INFO - Executing tool: find with args: {'pattern': '*.py', 'directory': 'chapter1/image-gen-workflow'}
+2026-09-20 23:23:23,735 - INFO - Executing tool: find with args: {'pattern': '*.py', 'directory': 'chapter2/agent-skills-ppt'}
+2026-09-20 23:23:31,064 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-20 23:23:31,065 - INFO - Iteration 5 - TTFT: 7.324s, Tokens: prompt=6758, completion=229, cached=4096
+2026-09-20 23:23:31,065 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/context/README.md'}
+2026-09-20 23:23:31,101 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/context/main.py'}
+2026-09-20 23:23:31,122 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/context/agent.py'}
+2026-09-20 23:23:31,137 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/context/config.py'}
+2026-09-20 23:23:31,149 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/context/grounding.py'}
+2026-09-20 23:23:34,241 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-09-20 23:23:34,242 - INFO - Retrying request to /chat/completions in 0.456127 seconds
+2026-09-20 23:23:40,323 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-20 23:23:40,324 - INFO - Iteration 6 - TTFT: 9.153s, Tokens: prompt=19017, completion=167, cached=6656
+2026-09-20 23:23:40,325 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/context/agent.py', 'offset': 350}
+2026-09-20 23:23:40,327 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/image-gen-workflow/README.md'}
+2026-09-20 23:23:40,360 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/image-gen-workflow/main.py'}
+2026-09-20 23:23:40,385 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/image-gen-workflow/pipeline.py'}
+2026-09-20 23:23:40,402 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/image-gen-workflow/config.py'}
+2026-09-20 23:23:47,292 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-09-20 23:23:47,293 - INFO - Retrying request to /chat/completions in 0.399020 seconds
+2026-09-20 23:23:55,104 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-20 23:23:55,105 - INFO - Iteration 7 - TTFT: 14.688s, Tokens: prompt=44588, completion=182, cached=18944
+2026-09-20 23:23:55,106 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/image-gen-workflow/pipeline.py', 'offset': 408}
+2026-09-20 23:23:55,107 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/image-gen-workflow/evidence.py'}
+2026-09-20 23:23:55,128 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/README.md'}
+2026-09-20 23:23:55,151 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/demo.py'}
+2026-09-20 23:23:55,169 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/prepare_official_skill.py'}
+2026-09-20 23:24:05,557 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-20 23:24:05,559 - INFO - Iteration 8 - TTFT: 10.373s, Tokens: prompt=57500, completion=174, cached=43008
+2026-09-20 23:24:05,559 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/run_official_experiment.py'}
+2026-09-20 23:24:05,620 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/experiment_protocol.json'}
+2026-09-20 23:24:05,651 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/skills/pptx/SKILL.md'}
+2026-09-20 23:24:05,672 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/skills/pptx/scripts/generate_pptx.py'}
+2026-09-20 23:24:14,769 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-20 23:24:14,770 - INFO - Iteration 9 - TTFT: 9.083s, Tokens: prompt=66072, completion=138, cached=57344
+2026-09-20 23:24:14,770 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/run_official_experiment.py', 'offset': 271}
+2026-09-20 23:24:14,772 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/demo.py', 'offset': 463}
+2026-09-20 23:24:14,773 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/validate_official_run.py'}
+2026-09-20 23:24:20,356 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-20 23:24:20,357 - INFO - Iteration 10 - TTFT: 5.555s, Tokens: prompt=69028, completion=86, cached=65536
+2026-09-20 23:24:20,357 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/validate_official_run.py', 'offset': 312}
+2026-09-20 23:24:20,359 - INFO - Executing tool: find with args: {'pattern': '*.py', 'directory': 'chapter2/agent-skills-ppt/tests'}
+2026-09-20 23:24:22,709 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-09-20 23:24:22,710 - INFO - Retrying request to /chat/completions in 0.474268 seconds
+2026-09-20 23:24:29,916 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-20 23:24:29,918 - INFO - Iteration 11 - TTFT: 9.558s, Tokens: prompt=69318, completion=142, cached=67584
+2026-09-20 23:24:29,918 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/tests/conftest.py'}
+2026-09-20 23:24:29,945 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/tests/test_dispatch.py'}
+2026-09-20 23:24:29,954 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/tests/test_generate_pptx_null_bullets.py'}
+2026-09-20 23:24:29,970 - INFO - Executing tool: read_file with args: {'file_path': 'chapter2/agent-skills-ppt/tests/test_reasoning_degrade.py'}
+2026-09-20 23:24:35,422 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 429 Too Many Requests"
+2026-09-20 23:24:35,422 - INFO - Retrying request to /chat/completions in 0.387405 seconds
+2026-09-20 23:24:42,393 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-20 23:24:42,395 - INFO - Iteration 12 - TTFT: 12.405s, Tokens: prompt=71731, completion=148, cached=69120
+2026-09-20 23:24:42,395 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/context/agent.py', 'offset': 700}
+2026-09-20 23:24:42,397 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/context/tests/test_agent.py'}
+2026-09-20 23:24:42,422 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/image-gen-workflow/tests/test_rewrite_parsing.py'}
+2026-09-20 23:24:42,443 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/image-gen-workflow/tests/test_manifest_schema.py'}
+2026-09-20 23:24:50,973 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-20 23:24:50,974 - INFO - Iteration 13 - TTFT: 8.521s, Tokens: prompt=78513, completion=107, cached=71680
+2026-09-20 23:24:50,974 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/context/test_grounding.py'}
+2026-09-20 23:24:51,003 - INFO - Executing tool: read_file with args: {'file_path': 'chapter1/context/test_main_result_semantics.py'}
+2026-09-21 03:12:41,398 - INFO - Retrying request to /chat/completions in 0.476146 seconds
+2026-09-21 07:42:36,123 - INFO - Retrying request to /chat/completions in 0.875131 seconds
+2026-09-21 07:42:37,037 - ERROR - Error in iteration 14: Connection error.
+2026-09-21 07:42:37,038 - INFO - 
+Mode: correct
+2026-09-21 07:42:37,038 - INFO - First TTFT: 6.314s
+2026-09-21 07:42:37,038 - INFO - TTFT per iteration: [6.314s, 2.655s, 5.433s, 5.235s, 7.324s... (13 total)]
+2026-09-21 07:42:37,038 - INFO - TTFT improvement: -35.0% (first vs last)
+2026-09-21 07:42:37,038 - INFO - Total Time: 29973.258s
+2026-09-21 07:42:37,038 - INFO - Cached Tokens: 408832
+2026-09-21 07:42:37,038 - INFO - Cache Hits: 12
+2026-09-21 07:42:37,038 - INFO - Cache Misses: 0
+2026-09-21 07:42:37,038 - INFO - Total Tokens: 496707
+2026-09-21 07:42:37,038 - INFO - 
+============================================================
+2026-09-21 07:42:37,038 - INFO - Testing mode: dynamic_system
+2026-09-21 07:42:37,038 - INFO - ============================================================
+2026-09-21 07:42:37,503 - INFO - File tools initialized with root: D:\AI Coding\ai-agent-book
+2026-09-21 07:42:37,503 - INFO - Agent initialized with mode: dynamic_system, model: kimi-k2.6
+2026-09-21 07:42:37,516 - INFO - Retrying request to /chat/completions in 0.379530 seconds
+2026-09-21 07:42:37,898 - INFO - Retrying request to /chat/completions in 0.968702 seconds
+2026-09-21 07:42:38,868 - ERROR - Error in iteration 1: Connection error.
+2026-09-21 07:42:38,869 - INFO - 
+Mode: dynamic_system
+2026-09-21 07:42:38,869 - INFO - First TTFT: 0.000s
+2026-09-21 07:42:38,869 - INFO - Total Time: 1.365s
+2026-09-21 07:42:38,869 - INFO - Cached Tokens: 0
+2026-09-21 07:42:38,869 - INFO - Cache Hits: 0
+2026-09-21 07:42:38,869 - INFO - Cache Misses: 0
+2026-09-21 07:42:38,869 - INFO - Total Tokens: 0
+2026-09-21 07:42:38,869 - INFO - 
+============================================================
+2026-09-21 07:42:38,869 - INFO - Testing mode: shuffled_tools
+2026-09-21 07:42:38,870 - INFO - ============================================================
+2026-09-21 07:42:39,166 - INFO - File tools initialized with root: D:\AI Coding\ai-agent-book
+2026-09-21 07:42:39,167 - INFO - Agent initialized with mode: shuffled_tools, model: kimi-k2.6
+2026-09-21 07:42:39,170 - INFO - Retrying request to /chat/completions in 0.437984 seconds
+2026-09-21 07:42:39,609 - INFO - Retrying request to /chat/completions in 0.979446 seconds
+2026-09-21 07:42:40,591 - ERROR - Error in iteration 1: Connection error.
+2026-09-21 07:42:40,591 - INFO - 
+Mode: shuffled_tools
+2026-09-21 07:42:40,591 - INFO - First TTFT: 0.000s
+2026-09-21 07:42:40,591 - INFO - Total Time: 1.424s
+2026-09-21 07:42:40,591 - INFO - Cached Tokens: 0
+2026-09-21 07:42:40,591 - INFO - Cache Hits: 0
+2026-09-21 07:42:40,591 - INFO - Cache Misses: 0
+2026-09-21 07:42:40,591 - INFO - Total Tokens: 0
+2026-09-21 07:42:40,591 - INFO - 
+============================================================
+2026-09-21 07:42:40,591 - INFO - Testing mode: dynamic_profile
+2026-09-21 07:42:40,591 - INFO - ============================================================
+2026-09-21 07:42:40,822 - INFO - File tools initialized with root: D:\AI Coding\ai-agent-book
+2026-09-21 07:42:40,822 - INFO - Agent initialized with mode: dynamic_profile, model: kimi-k2.6
+2026-09-21 07:42:40,824 - INFO - Retrying request to /chat/completions in 0.416605 seconds
+2026-09-21 10:05:50,375 - INFO - HTTP Request: POST https://api.moonshot.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2026-09-21 10:05:50,377 - INFO - Iteration 1 - TTFT: 8589.555s, Tokens: prompt=478, completion=130
+2026-09-21 10:05:50,377 - INFO - Executing tool: find with args: {'pattern': '*', 'directory': 'chapter1'}
+2026-09-21 10:05:50,400 - INFO - Executing tool: find with args: {'pattern': '*', 'directory': 'chapter2'}

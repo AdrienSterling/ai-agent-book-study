@@ -1,0 +1,250 @@
+{
+  "success": true,
+  "final_answer": "Here is a comprehensive analysis and summary of all projects in the **chapter1** and **chapter2** directories.\n\n---\n\n# Chapter 1 Projects\n\n## 1. `chapter1/context` \u2014 Context-Aware AI Agent with Ablation Studies\n**Book Experiment:** 1-1 \u2605\u2605 \u2014 The Key Role of Context\n\n### Purpose\nThis project implements a multi-provider, context-aware AI agent designed to systematically explore how different context components affect agent behavior through **ablation studies**. It demonstrates that removing history, reasoning, tool calls, or tool results degrades performance in measurable ways.\n\n### Key Files\n- **`main.py`** \u2014 CLI entry point supporting interactive mode, single-task mode, and full ablation studies\n- **`agent.py`** \u2014 Core agent loop with `ContextAwareAgent`, `ToolRegistry`, `AgentTrajectory`, and 5 `ContextMode` variants\n- **`config.py`** \u2014 Provider resolution and configuration (supports shared `agentbook` provider registry)\n- **`grounding.py`** \u2014 Task-agnostic groundedness verifier: checks whether answer figures came from actual tool observations or were hallucinated\n- **`tests/`** \u2014 Comprehensive test suite including malformed JSON handling, provider switching, and grounding verification\n\n### Key Features\n1. **Five Context Modes for Ablation:**\n   - `FULL` \u2014 Complete context\n   - `NO_HISTORY` \u2014 No historical tool call tracking\n   - `NO_REASONING` \u2014 Strips `reasoning_content` from messages\n   - `NO_TOOL_CALLS` \u2014 Tools are hidden from the model\n   - `NO_TOOL_RESULTS` \u2014 Tool results are redacted (marker or empty style)\n\n2. **Multi-Provider Support:** Works with Doubao (ByteDance), SiliconFlow Qwen, Alibaba Cloud DashScope/Bailian, Moonshot Kimi, DeepSeek, and OpenRouter fallback\n\n3. **Tool Registry:**\n   - `parse_pdf(url)` \u2014 PDF text extraction\n   - `convert_currency(amount, from, to)` \u2014 Static exchange rate conversion\n   - `calculate(expression)` \u2014 Safe math evaluation\n   - `code_interpreter(code)` \u2014 Python code execution for complex calculations\n\n4. **Groundedness Assessment:** A novel verification module (`grounding.py`) that extracts revenue-scale quantities from answers and checks if they appear in tool observations or the task text. This prevents false positives where a model hallucinates plausible but ungrounded numbers.\n\n5. **Evidence Preservation:** Every API turn is recorded as a credential-free request/response snapshot in `AgentTrajectory.api_turns`.\n\n---\n\n## 2. `chapter1/image-gen-workflow` \u2014 Text-to-Image Workflow vs. Native Generation\n**Book Experiment:** 1-4 \u2605 \u2014 Text-to-Image Workflow and Native Image Generation Comparison\n\n### Purpose\nThis project runs a controlled comparison between **workflow-based image generation** (LLM prompt rewrite \u2192 SD-style model) and **native image generation** (end-to-end multimodal models). It demonstrates that workflow \"rewrite nodes\" translate and concretize user intent, while native models can sometimes preserve intent better (especially for text-in-image requirements).\n\n### Key Files\n- **`main.py`** \u2014 Orchestrates 5 test requirements across 3 generation routes\n- **`pipeline.py`** \u2014 Implements the three routes: `workflow` (Kimi rewrite + Wanx generation), `native` (Gemini 3 Pro Image), `native_gptimage` (GPT-Image 2)\n- **`config.py`** \u2014 API keys and model selection for Kimi, DashScope Wanx, Gemini, and OpenAI\n- **`evidence.py`** \u2014 Manifest builder and validator with SHA-256 hashing, schema validation, and git provenance tracking\n\n### Key Features\n1. **Three Generation Routes:**\n   - **Workflow:** Kimi-k3 rewrites Chinese colloquial requests into English SD-style prompts (with positive/negative prompts and style notes) \u2192 DashScope `wan2.2-t2i-flash` generates the image\n   - **Native A:** Gemini `gemini-3-pro-image` (Nano Banana 2) generates directly from the Chinese prompt\n   - **Native B:** OpenAI `gpt-image-2` generates directly via the images/generations API\n\n2. **Five Test Requirements (3 specific, 2 broad):**\n   - Specific: \"programmer working overtime, melancholic style\", \"windowsill plant with morning sunlight\", \"headphone poster with specific copy text\"\n   - Broad: \"AGI programmer work scene\", \"future city morning\"\n\n3. **Evidence System:** Every API call is logged with request parameters, response IDs, token usage, latency, and timestamps. No credential values are recorded. Output includes `evidence.json` with image SHA-256 hashes and run metadata.\n\n4. **Key Finding:** The rewrite node performs translation, concretization, and style decisions. However, for requirements involving specific text (e.g., poster copy), the workflow route sometimes loses the text because the rewrite node adds `text` to the negative prompt. Native routes (especially GPT-Image 2) handle text rendering and conceptual density better.\n\n---\n\n# Chapter 2 Projects\n\n## 1. `chapter2/agent-skills-ppt` \u2014 Agent Skills & Progressive Disclosure\n**Book Experiment:** 2-6 \u2605\u2605 \u2014 Generate a Presentation from a Paper Using Agent Skills\n\n### Purpose\nDemonstrates **Agent Skills** via **progressive disclosure**: an agent loads domain knowledge on-demand rather than stuffing everything into the system prompt. The project supports both a legacy isomorphic demo (for teaching) and an official canonical reproduction using the real Anthropic PPTX Skill.\n\n### Key Files\n- **`demo.py`** \u2014 Legacy isomorphic demo using OpenAI SDK with a local `pptx` skill loader\n- **`run_official_experiment.py`** \u2014 Canonical runner for the real experiment using either Claude Code or Kimi Code CLI\n- **`prepare_official_skill.py`** \u2014 Fetches and verifies the pinned official Anthropic PPTX Skill from GitHub\n- **`skills/pptx/SKILL.md`** \u2014 Local isomorphic skill manifest (3-layer: metadata \u2192 core flow \u2192 details)\n- **`skills/pptx/scripts/generate_pptx.py`** \u2014 Bundled python-pptx script that builds real `.pptx` files\n\n### Key Features\n1. **Three-Layer Progressive Disclosure:**\n   - **Layer 1 (Metadata):** System prompt contains only skill names and descriptions\n   - **Layer 2 (Core Flow):** `read_skill()` loads full `SKILL.md` when needed\n   - **Layer 3 (Details):** `read_skill_file()` loads reference docs, scripts, or implementation details\n   - **Execution:** `run_skill_script()` calls bundled scripts like `generate_pptx.py`\n\n2. **Official Experiment Protocol:** Pins the official Anthropic `skills` repo to revision `69c0b1a...`, uses the real \"Attention Is All You Need\" PDF (SHA-256 verified), and enforces artifact gates (10\u201315 slides, 3+ PDF visuals, full-deck thumbnail, credential scan).\n\n3. **Runtime Agnostic:** Supports both Claude Code and Kimi Code CLI under an author-mandated acceptance policy. Both paths use the same pinned Skill content and pass the same validation gates.\n\n4. **Legacy Offline Mode:** `demo.py --offline` runs deterministically without API keys for teaching and smoke testing.\n\n---\n\n## 2. `chapter2/attention_visualization` \u2014 Attention Mechanism Visualization\n**Book Experiment:** 2-2 \u2605 \u2014 Attention Mechanism Visualization\n\n### Purpose\nProvides interactive tools and standalone CLI utilities to explore **self-attention patterns** in language models, including attention sinks, causal masking, and layer-by-layer differences.\n\n### Key Files\n- **`attention_cli.py`** \u2014 Standalone CLI for generating attention heatmaps without any frontend\n- **`agent.py`** \u2014 Core agent that generates trajectories with attention weights\n- **`main.py`** \u2014 ReAct agent with tool calling that captures multi-step attention shifts\n- **`visualization.py`** \u2014 Heatmap and comparison rendering utilities\n- **`run_attention_experiment.py`** \u2014 Canonical experiment runner with lossless tensor preservation\n- **`run_status_bar_experiment.py`** \u2014 Experiment 2-8: status-bar comparison campaign\n\n### Key Features\n1. **Standalone CLI (`attention_cli.py`):**\n   - Runs real models (default `Qwen/Qwen3-0.6B`)\n   - Generates attention heatmaps for custom prompts\n   - Supports layer/head selection and multi-layer comparison\n   - Computes **attention-sink share** (fraction of attention on the first token)\n\n2. **Trajectory Format:** JSON files store token lists, full attention matrices (per layer/head), model metadata, and response text\n\n3. **Frontend (Next.js):** React app in `frontend/` loads trajectories, provides tab navigation, interactive heatmaps, and statistical analysis\n\n4. **Canonical Evidence:** The official experiment pins model revision, preserves lossless NPZ tensors for first/middle/last layers, verifies the causal upper triangle numerically, and reports attention-sink measurements\n\n5. **Status-Bar Experiment (2-8):** Matched-pair design comparing complete trajectories with and without `<agent_status>` blocks, capturing true eager-attention tensors\n\n---\n\n## 3. `chapter2/context-compression` \u2014 Context Compression Strategies\n**Book Experiment:** 2-10 \u2605\u2605\u2605 \u2014 Comparison of Context Compression Strategies\n\n### Purpose\nImplements and compares **six context compression strategies** for LLM agents, using a realistic research task (finding current affiliations of OpenAI co-founders) to demonstrate trade-offs between cost, performance, reliability, and relevance.\n\n### Key Files\n- **`experiment.py`** \u2014 Automated comparison runner producing token/compression/overflow tables\n- **`agent.py`** \u2014 `ResearchAgent` with streaming, tool calling, and windowed compression\n- **`compression_strategies.py`** \u2014 `ContextCompressor` with 6 strategy implementations\n- **`web_tools.py`** \u2014 Web search (Serper) and page fetching with mock fallback\n- **`run_all_strategies.py`** \u2014 Detailed per-round logging across all strategies\n\n### Key Features\n1. **Six Compression Strategies:**\n   - **No compression** \u2014 Full webpage content (baseline, expected to overflow)\n   - **Non-context-aware: individual summaries** \u2014 Per-page LLM summaries\n   - **Non-context-aware: combined summary** \u2014 Concatenate then summarize once\n   - **Context-aware summary** \u2014 Query-focused summary of all results\n   - **Context-aware with citations** \u2014 Adds source links for follow-ups\n   - **Windowed context** \u2014 Full content for latest call, compress older history\n\n2. **Real Metrics:** Success rate, execution time, token count, compression ratio, context overflows, and tool call counts\n\n3. **Key Results (Kimi K3, real run):**\n   - No compression fails at ~165K tokens (>128K budget)\n   - Context-aware summary is most token-efficient (40,157 tokens, 3.0% compression)\n   - Windowed context finishes fastest among compressing strategies while keeping recent content full-fidelity\n\n4. **Streaming Support:** Real-time output with `--streaming` flag\n\n---\n\n## 4. `chapter2/kv-cache` \u2014 KV Cache & Harmful Context Management Patterns\n**Book Experiment:** 2-3 \u2605\u2605 \u2014 Common but Harmful Context Management Patterns\n\n### Purpose\nDemonstrates how **KV (Key-Value) cache** utilization changes under six implementation patterns\u2014one correct and five incorrect anti-patterns. Shows that small-looking changes (dynamic prompts, shuffled tools, sliding windows) can invalidate cache, increasing latency and cost.\n\n### Key Files\n- **`main.py`** \u2014 Interactive menu and CLI with `--compare` and `--report` modes\n- **`agent.py`** \u2014 ReAct agent with local filesystem tools and six mode implementations\n- **`tests/`** \u2014 Offline regression tests (no API keys needed)\n- **`tests/manual/`** \u2014 Live smoke checks for cache invalidation, tool calling, and error recovery\n\n### Key Features\n1. **Six Implementation Modes:**\n   - **Correct** \u2014 Stable context, fixed system prompt, consistent tool order\n   - **Dynamic system prompt** \u2014 Adds timestamp every request \u2192 full cache invalidation\n   - **Shuffled tools** \u2014 Random tool definition order each request\n   - **Dynamic user profile** \u2014 Changing irrelevant context each iteration\n   - **Sliding window** \u2014 Keeps only last 5 messages \u2192 breaks prefix continuity\n   - **Text format** \u2014 Plain text history instead of structured messages\n\n2. **Metrics:** TTFT (Time to First Token), cache hit rate, cache ratio (cached/prompt tokens), total time, iterations, and illustrative cost savings\n\n3. **Offline Comparison (`--report`):** Can generate comparison tables from saved JSON files without any API key\n\n4. **Key Insight:** Cache ratio is the cleanest signal. Shuffled tools can drop cache ratio from ~10% to ~3.4%, while `text_format` can increase total time by ~2.4\u00d7. Dynamic data appended at the end of an otherwise stable prefix only invalidates from that point forward.\n\n---\n\n## 5. `chapter2/local_llm_serving` \u2014 Local LLM Serving & Tool Calling\n**Book Experiment:** 2-1 \u2605 \u2014 Local LLM Service Deployment and Tool Calling\n\n### Purpose\nCross-platform demonstration of **LLM tool calling via standard OpenAI-compatible APIs** using local inference servers. Supports both Ollama (universal) and vLLM (Linux/WSL GPU).\n\n### Key Files\n- **`main.py`** \u2014 Universal entry point with explicit `--backend` flags and `ToolCallingAgent`\n- **`ollama_native.py`** \u2014 Ollama-native tool calling with thinking/reasoning support\n- **`server.py`** \u2014 vLLM server manager\n- **`benchmark.py`** \u2014 Serving benchmark for throughput, TTFT, KV cache, and batching\n- **`tools.py`** \u2014 Built-in tool implementations\n- **`check_compatibility.py`** \u2014 Platform/backend compatibility checker\n\n### Key Features\n1. **Dual Backend Support:**\n   - **Ollama** \u2014 macOS, Windows, Linux without GPU (`qwen3:0.6b`)\n   - **vLLM** \u2014 Linux/WSL2 with NVIDIA GPU (after installing `vllm` extra)\n\n2. **Built-in Tools:** Weather (Open-Meteo), current time, currency conversion, PDF parsing, Python code interpreter\n\n3. **Streaming:** Real-time display of thinking chunks, tool calls, tool results, and final text. Handles both Ollama's separate `thinking` field and inline `<think>` tags\n\n4. **Thinking/Revealed Reasoning:** Demonstrates how Qwen3 models emit chain-of-thought via a separate `thinking` field (parsed by Ollama) or raw `<think>` tokens in the stream\n\n5. **Serving Benchmark (`benchmark.py`):** Measures throughput, TTFT, KV cache hit vs. miss latency, batching behavior, and structured output streaming\n\n---\n\n## 6. `chapter2/prompt-engineering` \u2014 Prompt Engineering Ablation (\u03c4-bench)\n**Book Experiment:** 2-4 \u2605\u2605 \u2014 Ablation Study in Prompt Engineering\n\n### Purpose\nExtends the **\u03c4-bench** framework with three ablation axes to quantify how **tone, instruction organization, and tool descriptions** affect agent task success. The central claim: prompt engineering treats an Agent like a smart new hire.\n\n### Key Files\n- **`run_ablation.py`** \u2014 One-shot full ablation runner with `--all` flag\n- **`ablation_agent.py`** \u2014 Agent implementation with configurable tone, wiki randomization, and tool description stripping\n- **`analyze_results.py`** \u2014 Result aggregation and comparison table generation\n",
+  "iterations": 9,
+  "tool_calls": [
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "*",
+        "directory": "chapter1"
+      },
+      "timestamp": 1789978027.7181509
+    },
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "*",
+        "directory": "chapter2"
+      },
+      "timestamp": 1789978027.848429
+    },
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "*.py",
+        "directory": "chapter1/context"
+      },
+      "timestamp": 1789978035.2858644
+    },
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "*.py",
+        "directory": "chapter1/image-gen-workflow"
+      },
+      "timestamp": 1789978035.2889361
+    },
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "*.py",
+        "directory": "chapter2/agent-skills-ppt"
+      },
+      "timestamp": 1789978035.2934413
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/README.md"
+      },
+      "timestamp": 1789978043.639971
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/image-gen-workflow/README.md"
+      },
+      "timestamp": 1789978043.642247
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/README.md"
+      },
+      "timestamp": 1789978043.6443334
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/main.py"
+      },
+      "timestamp": 1789978054.0014243
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/agent.py"
+      },
+      "timestamp": 1789978054.0053284
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/config.py"
+      },
+      "timestamp": 1789978054.0075288
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/grounding.py"
+      },
+      "timestamp": 1789978054.0098965
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/image-gen-workflow/main.py"
+      },
+      "timestamp": 1789978068.4107335
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/image-gen-workflow/pipeline.py"
+      },
+      "timestamp": 1789978068.413304
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/image-gen-workflow/config.py"
+      },
+      "timestamp": 1789978068.415342
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/image-gen-workflow/evidence.py"
+      },
+      "timestamp": 1789978068.4173737
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/context/agent.py",
+        "offset": 400,
+        "size": 300
+      },
+      "timestamp": 1789978090.8271956
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter1/image-gen-workflow/pipeline.py",
+        "offset": 300,
+        "size": 200
+      },
+      "timestamp": 1789978090.8284647
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/demo.py"
+      },
+      "timestamp": 1789978090.830781
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/run_official_experiment.py"
+      },
+      "timestamp": 1789978090.833212
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/prepare_official_skill.py"
+      },
+      "timestamp": 1789978121.4813864
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/skills/pptx/SKILL.md"
+      },
+      "timestamp": 1789978121.484833
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/skills/pptx/scripts/generate_pptx.py"
+      },
+      "timestamp": 1789978121.4873745
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/agent-skills-ppt/experiment_protocol.json"
+      },
+      "timestamp": 1789978121.4893503
+    },
+    {
+      "name": "find",
+      "arguments": {
+        "pattern": "*.py",
+        "directory": "chapter2"
+      },
+      "timestamp": 1789978121.573827
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/attention_visualization/README.md"
+      },
+      "timestamp": 1789978159.3768003
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/context-compression/README.md"
+      },
+      "timestamp": 1789978159.3905115
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/kv-cache/README.md"
+      },
+      "timestamp": 1789978159.3937156
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/local_llm_serving/README.md"
+      },
+      "timestamp": 1789978159.420976
+    },
+    {
+      "name": "read_file",
+      "arguments": {
+        "file_path": "chapter2/prompt-engineering/README.md"
+      },
+      "timestamp": 1789978159.4366891
+    }
+  ],
+  "metrics": {
+    "ttft": 6.889049291610718,
+    "ttft_per_iteration": [
+      6.889049291610718,
+      7.428781032562256,
+      8.343423843383789,
+      10.350629568099976,
+      14.397335290908813,
+      22.407796621322632,
+      30.631696701049805,
+      37.74129271507263,
+      154.1260106563568
+    ],
+    "total_time": 292.7739996910095,
+    "iterations": 9,
+    "tool_calls": 30,
+    "cache_hits": 8,
+    "cache_misses": 0,
+    "prompt_tokens": 335486,
+    "completion_tokens": 5741,
+    "cached_tokens": 2048
+  },
+  "mode": "dynamic_system"
+}

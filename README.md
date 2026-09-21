@@ -13,8 +13,8 @@
 | 章 | 主题 | 笔记 | 贯穿项目加了什么 | 状态 |
 |:--:|---|:--:|---|:--:|
 | 1 | Agent 基础 | [✓](notes/Ai%20Agent%20Book.md) | 裸 ReAct loop + 消融实验开关 + token 计量 | 🔨 笔记✓ [实验1-1✓](experiments/ch01-ablation/) loop.py 待写 |
-| 2 | 上下文工程 | | 上下文压缩 / 前缀稳定性 | |
-| 3 | 用户记忆与知识库 | | 用户记忆 + RAG | |
+| 2 | 上下文工程 | [✓](notes/Ai%20Agent%20Book.md) | 上下文压缩 / 前缀稳定性 | 笔记✓ [实验2-3✓](experiments/ch02-kv-cache/) |
+| 3 | 用户记忆与知识库 | [✓](notes/Ai%20Agent%20Book.md) | 用户记忆 + RAG | 笔记✓ |
 | 4 | 工具 | | MCP 工具 + 权限分级 | |
 | 5 | Coding Agent 与通用 Agent | | 验证与纠正（Harness） | |
 | 6 | 交互 | | 扩展观察 / 动作空间 | |
@@ -48,6 +48,8 @@ uv run python main.py --ablate tool_definitions --show-trajectory
 ## 实验记录
 
 书里配套实验的运行结果在 [`experiments/`](experiments/)，书的代码本身不放这里。
+
+**实验 2-3（KV Cache，kimi-k2.6）**：只往 system 注入动态内容，缓存占比 70.6% → **0.6%**，输入账单 **3.3 倍**，而任务照常完成、输出毫无异常——书里说的「无形成本」。滑动窗口那组则直接**任务失败**，82 次工具调用里 32 次重复。详见 [observations.md](experiments/ch02-kv-cache/observations.md)。
 
 **实验 1-1（上下文消融，kimi-k3，五组 canonical run）已完成** —— 其中 `no_reasoning` 组
 跑出了和正文不一致的结果，详见 [observations.md](experiments/ch01-ablation/observations.md)。
