@@ -49,7 +49,7 @@ uv run python main.py --ablate tool_definitions --show-trajectory
 
 书里配套实验的运行结果在 [`experiments/`](experiments/)，书的代码本身不放这里。
 
-**实验 4-1（主动工具发现，DeepSeek + 离线对照）**：126 个工具下，全量注入每任务 **11,630 token**，主动发现只要 **974**——精简 **11.9 倍**。意外发现：**检索预筛选只有 4/8**，比全量注入还差，因为它按用户原始问题做一次性匹配，`arxiv_search` 根本没进候选池。详见 [discovery.md](experiments/ch04-tools/discovery.md)。
+**实验 4-1（主动工具发现，DeepSeek + 离线对照）**：126 个工具下，全量注入每任务 **11,630 token**，主动发现只要 **974**——精简 **11.9 倍**。token 与延迟**完全复现**；但**准确率提升没有复现**——而书里正文的「预期观察」与仓库自带的验收记录本身就是矛盾的，我的数据站验收记录那边。更值得记的反向发现：**全量注入任务完成 8/8，主动发现只有 5/8**——省下的 token 变成了没完成的任务。详见 [discovery.md](experiments/ch04-tools/discovery.md)。
 
 **第四章自建实验**：书里的 MCP 服务器与当前 SDK 不兼容，于是自己写了 MCP Server + 两个客户端（一个用官方 SDK，一个纯 JSON-RPC），外加一份 Function Calling 的原始报文走查。详见 [run.md](experiments/ch04-tools/run.md)。
 

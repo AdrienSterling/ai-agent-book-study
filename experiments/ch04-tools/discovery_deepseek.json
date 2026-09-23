@@ -1,0 +1,1020 @@
+{
+  "model": "deepseek-chat",
+  "embedder": "local-hash-512",
+  "tool_set_size": 126,
+  "offline": false,
+  "strategies": [
+    "full",
+    "prefilter",
+    "discovery"
+  ],
+  "records": [
+    {
+      "task": "finance+news",
+      "strategy": "full",
+      "result": {
+        "mode": "full_injection",
+        "injected_tokens": 11630,
+        "num_tools_exposed": 126,
+        "called": [
+          "get_stock_price",
+          "search_news",
+          "get_top_headlines",
+          "search_news",
+          "web_search",
+          "quick_answer"
+        ],
+        "trace": [
+          "[call] get_stock_price({\"symbol\": \"AAPL\"})",
+          "[call] search_news({\"query\": \"Apple stock\", \"lang\": \"en\"})",
+          "[call] get_top_headlines({\"category\": \"business\", \"country\": \"us\"})",
+          "[call] search_news({\"query\": \"苹果 股价 下跌\", \"lang\": \"zh\"})",
+          "[call] web_search({\"query\": \"苹果 AAPL 股价 下跌 原因 iPhone 需求\"})",
+          "[call] quick_answer({\"question\": \"Why did Apple stock fall recently? iPhone demand concerns\"})",
+          "[finish] 苹果公司（AAPL）最新股价为 227.52 美元，当日下跌 1.83%（数据来源：NASDAQ）。\n\n关于下跌原因，检索到的相关新闻标题包括：\n1. 《Apple shares slip on iP"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": false,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": [
+          "quick_answer",
+          "web_search"
+        ]
+      },
+      "latency_s": 10.542
+    },
+    {
+      "task": "finance+news",
+      "strategy": "prefilter",
+      "result": {
+        "mode": "retrieval_prefilter",
+        "injected_tokens": 1022,
+        "num_tools_exposed": 10,
+        "prefiltered": [
+          "get_top_headlines",
+          "get_news_by_source",
+          "search_news",
+          "get_stock_price",
+          "get_stock_history",
+          "web_search",
+          "get_company_financials",
+          "get_dividend_history",
+          "convert_document",
+          "get_horoscope"
+        ],
+        "called": [
+          "get_stock_price",
+          "search_news"
+        ],
+        "trace": [
+          "[call] get_stock_price({\"symbol\": \"AAPL\"})",
+          "[call] search_news({\"query\": \"苹果 股价 下跌\", \"lang\": \"zh\"})",
+          "[finish] 苹果公司（AAPL）最新股价为 227.52 美元，较前一交易日下跌 1.83%（数据来源：NASDAQ）。\n\n相关新闻方面，检索到两条报道可解释此次下跌：\n1. 路透社（Reuters）：《Appl"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": true,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": []
+      },
+      "latency_s": 4.107
+    },
+    {
+      "task": "finance+news",
+      "strategy": "discovery",
+      "result": {
+        "mode": "active_discovery",
+        "injected_tokens": 683,
+        "num_tools_exposed": 7,
+        "discovered": [
+          "get_crypto_price",
+          "get_stock_price",
+          "get_traffic_info",
+          "web_search"
+        ],
+        "called": [
+          "discover_tools",
+          "get_stock_price",
+          "web_search"
+        ],
+        "trace": [
+          "[discover_tools] need='查询股票实时价格和近期股价走势' -> ['get_crypto_price', 'web_search', 'get_traffic_info', 'get_stock_price']",
+          "[call] get_stock_price({\"symbol\": \"AAPL\"})",
+          "[call] web_search({\"query\": \"苹果公司 AAPL 股价下跌 原因 最新新闻\"})",
+          "[finish] 苹果公司（AAPL）最新股价为 227.52 美元，较前一交易日下跌 1.83%（数据来源：NASDAQ）。\n\n关于下跌原因，我搜索了相关新闻，但当前新闻检索返回的是占位（mock）结果，未能获取到具"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": false,
+        "precise": false,
+        "filled_slots": 1,
+        "total_slots": 2,
+        "missed_slots": [
+          [
+            "search_news",
+            "get_top_headlines",
+            "get_news_by_source"
+          ]
+        ],
+        "used_generic_substitute": [
+          "web_search"
+        ]
+      },
+      "latency_s": 4.714
+    },
+    {
+      "task": "arxiv+download",
+      "strategy": "full",
+      "result": {
+        "mode": "full_injection",
+        "injected_tokens": 11630,
+        "num_tools_exposed": 126,
+        "called": [
+          "arxiv_search",
+          "download_file",
+          "download_file",
+          "download_file"
+        ],
+        "trace": [
+          "[call] arxiv_search({\"query\": \"transformer\", \"max_results\": 5})",
+          "[call] download_file({\"url\": \"https://arxiv.org/pdf/2406.00001\", \"path\": \"./papers/2406.00001.pdf\"})",
+          "[call] download_file({\"url\": \"https://arxiv.org/pdf/2406.00002\", \"path\": \"./papers/2406.00002.pdf\"})",
+          "[call] download_file({\"url\": \"https://arxiv.org/pdf/2406.00003\", \"path\": \"./papers/2406.00003.pdf\"})",
+          "[finish] 已为你找到 transformer 领域最新的研究论文，并下载了排在前三的论文：\n\n1. Efficient Transformers Revisited (arXiv:2406.00001)\n   "
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": true,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": []
+      },
+      "latency_s": 6.217
+    },
+    {
+      "task": "arxiv+download",
+      "strategy": "prefilter",
+      "result": {
+        "mode": "retrieval_prefilter",
+        "injected_tokens": 997,
+        "num_tools_exposed": 10,
+        "prefiltered": [
+          "arxiv_get_paper",
+          "s3_download",
+          "get_citations",
+          "google_search",
+          "bing_search",
+          "arxiv_search",
+          "get_news_by_source",
+          "download_file",
+          "universal_search",
+          "get_stock_history"
+        ],
+        "called": [
+          "arxiv_search",
+          "download_file",
+          "download_file",
+          "download_file"
+        ],
+        "trace": [
+          "[call] arxiv_search({\"query\": \"transformer\", \"max_results\": 5})",
+          "[call] download_file({\"url\": \"https://arxiv.org/pdf/2406.00001\", \"path\": \"2406.00001.pdf\"})",
+          "[call] download_file({\"url\": \"https://arxiv.org/pdf/2406.00002\", \"path\": \"2406.00002.pdf\"})",
+          "[call] download_file({\"url\": \"https://arxiv.org/pdf/2406.00003\", \"path\": \"2406.00003.pdf\"})",
+          "[finish] 已为你找到 transformer 领域最新的研究论文，并下载了排在前三的论文：\n\n1. Efficient Transformers Revisited (arXiv: 2406.00001) — "
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": true,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": []
+      },
+      "latency_s": 5.087
+    },
+    {
+      "task": "arxiv+download",
+      "strategy": "discovery",
+      "result": {
+        "mode": "active_discovery",
+        "injected_tokens": 1418,
+        "num_tools_exposed": 15,
+        "discovered": [
+          "arxiv_get_paper",
+          "arxiv_search",
+          "bing_search",
+          "download_file",
+          "extract_text_from_pdf",
+          "get_citations",
+          "google_search",
+          "read_file",
+          "s3_download",
+          "search_flights",
+          "search_tweets",
+          "semantic_scholar_search"
+        ],
+        "called": [
+          "discover_tools",
+          "discover_tools",
+          "arxiv_search",
+          "discover_tools",
+          "download_file",
+          "download_file",
+          "download_file"
+        ],
+        "trace": [
+          "[discover_tools] need='搜索 transformer 领域最新研究论文' -> ['google_search', 'search_flights', 'search_tweets', 'bing_search']",
+          "[discover_tools] need='在 arXiv 等学术平台上检索最新研究论文并获取论文列表' -> ['arxiv_search', 'semantic_scholar_search', 'get_citations', 'arxiv_get_paper']",
+          "[call] arxiv_search({\"query\": \"transformer\", \"max_results\": 5})",
+          "[discover_tools] need='下载文件，根据 URL 下载 PDF 论文到本地' -> ['s3_download', 'download_file', 'read_file', 'extract_text_from_pdf']",
+          "[call] download_file({\"url\": \"https://arxiv.org/pdf/2406.00001\", \"path\": \"2406.00001.pdf\"})",
+          "[call] download_file({\"url\": \"https://arxiv.org/pdf/2406.00002\", \"path\": \"2406.00002.pdf\"})",
+          "[call] download_file({\"url\": \"https://arxiv.org/pdf/2406.00003\", \"path\": \"2406.00003.pdf\"})",
+          "[finish] 已为你找到 transformer 领域最新的 3 篇论文并全部下载完成：\n\n1. Efficient Transformers Revisited（arXiv:2406.00001）\n   PDF:"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": true,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": []
+      },
+      "latency_s": 8.269
+    },
+    {
+      "task": "github+viz",
+      "strategy": "full",
+      "result": {
+        "mode": "full_injection",
+        "injected_tokens": 11630,
+        "num_tools_exposed": 126,
+        "called": [
+          "github_list_contributors",
+          "render_chart"
+        ],
+        "trace": [
+          "[call] github_list_contributors({\"owner\": \"pytorch\", \"repo\": \"pytorch\"})",
+          "[call] render_chart({\"data\": \"[{\\\"name\\\": \\\"alice\\\", \\\"commits\\\": 1240}, {\\\"name\\\": \\\"bob\\\", \\\"commits\\\": 830}, {\\\"name\\\": \\\"carol\\\", \\\"commits\\\": 617}]\", \"chart_type\": \"bar\"})",
+          "[finish] pytorch/pytorch 仓库贡献最多的三位贡献者如下：\n\n1. alice — 1240 次提交\n2. bob — 830 次提交\n3. carol — 617 次提交\n\n已生成各人提交量的柱"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": true,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": []
+      },
+      "latency_s": 3.662
+    },
+    {
+      "task": "github+viz",
+      "strategy": "prefilter",
+      "result": {
+        "mode": "retrieval_prefilter",
+        "injected_tokens": 1069,
+        "num_tools_exposed": 10,
+        "prefiltered": [
+          "github_get_commits",
+          "github_list_contributors",
+          "ask_knowledge_base",
+          "universal_search",
+          "render_chart",
+          "get_stock_price",
+          "get_stock_history",
+          "get_dividend_history",
+          "quick_answer",
+          "github_get_repo"
+        ],
+        "called": [
+          "github_list_contributors",
+          "render_chart"
+        ],
+        "trace": [
+          "[call] github_list_contributors({\"owner\": \"pytorch\", \"repo\": \"pytorch\"})",
+          "[call] render_chart({\"data\": \"[{\\\"name\\\": \\\"alice\\\", \\\"commits\\\": 1240}, {\\\"name\\\": \\\"bob\\\", \\\"commits\\\": 830}, {\\\"name\\\": \\\"carol\\\", \\\"commits\\\": 617}]\", \"chart_type\": \"bar\"})",
+          "[finish] pytorch/pytorch 仓库贡献最多的三位贡献者如下：\n\n| 排名 | 贡献者 | 提交数 |\n|------|--------|--------|\n| 1 | alice | 1240 |\n"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": true,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": []
+      },
+      "latency_s": 3.015
+    },
+    {
+      "task": "github+viz",
+      "strategy": "discovery",
+      "result": {
+        "mode": "active_discovery",
+        "injected_tokens": 1128,
+        "num_tools_exposed": 11,
+        "discovered": [
+          "caption_image",
+          "code_interpreter",
+          "generate_image",
+          "github_get_commits",
+          "github_get_pull_requests",
+          "github_list_contributors",
+          "github_list_issues",
+          "render_chart"
+        ],
+        "called": [
+          "discover_tools",
+          "github_list_contributors",
+          "discover_tools",
+          "render_chart"
+        ],
+        "trace": [
+          "[discover_tools] need='查询 GitHub 仓库的贡献者列表及各自提交次数' -> ['github_list_contributors', 'github_get_commits', 'github_get_pull_requests', 'github_list_issues']",
+          "[call] github_list_contributors({\"owner\": \"pytorch\", \"repo\": \"pytorch\"})",
+          "[discover_tools] need='根据数据生成柱状图/图表并保存为图片' -> ['render_chart', 'caption_image', 'generate_image', 'code_interpreter']",
+          "[call] render_chart({\"data\": \"[{\\\"login\\\": \\\"alice\\\", \\\"commits\\\": 1240}, {\\\"login\\\": \\\"bob\\\", \\\"commits\\\": 830}, {\\\"login\\\": \\\"carol\\\", \\\"commits\\\": 617}]\", \"chart_type\": \"bar\"})",
+          "[finish] pytorch/pytorch 仓库贡献最多的三位贡献者如下：\n\n1. alice — 1240 次提交\n2. bob — 830 次提交\n3. carol — 617 次提交\n\n已生成各人提交量的柱"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": true,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": []
+      },
+      "latency_s": 5.182
+    },
+    {
+      "task": "weather+calendar",
+      "strategy": "full",
+      "result": {
+        "mode": "full_injection",
+        "injected_tokens": 11630,
+        "num_tools_exposed": 126,
+        "called": [
+          "get_current_time",
+          "get_weather_forecast",
+          "create_calendar_event"
+        ],
+        "trace": [
+          "[call] get_current_time({\"timezone\": \"Asia/Shanghai\"})",
+          "[call] get_weather_forecast({\"location\": \"北京\", \"days\": 7})",
+          "[call] create_calendar_event({\"title\": \"户外徒步\", \"start\": \"周日 09:00\", \"end\": \"周日 12:00\"})",
+          "[finish] 这周日北京天气为晴天（Sunny），最高气温约31℃。由于是晴天，已按你的要求在你的日历中创建了'户外徒步'活动（周日 09:00–12:00）。祝徒步愉快！"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": true,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": []
+      },
+      "latency_s": 4.778
+    },
+    {
+      "task": "weather+calendar",
+      "strategy": "prefilter",
+      "result": {
+        "mode": "retrieval_prefilter",
+        "injected_tokens": 1087,
+        "num_tools_exposed": 10,
+        "prefiltered": [
+          "create_calendar_event",
+          "get_current_weather",
+          "list_calendar_events",
+          "quick_answer",
+          "get_weather_forecast",
+          "get_top_headlines",
+          "web_search",
+          "github_list_contributors",
+          "github_get_commits",
+          "get_earnings_calendar"
+        ],
+        "called": [
+          "get_weather_forecast",
+          "quick_answer"
+        ],
+        "trace": [
+          "[call] get_weather_forecast({\"location\": \"北京\", \"days\": 7})",
+          "[call] quick_answer({\"question\": \"今天是几号？这周日是几月几日？\"})",
+          "[finish] 北京这周日天气为晴天（Sunny，最高气温约31℃），适合户外徒步。但由于无法确定这周日的具体日期（日期查询未返回有效结果），我无法在日历中创建'户外徒步'活动。请提供这周日的具体日期（YYYY-MM"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": false,
+        "precise": false,
+        "filled_slots": 1,
+        "total_slots": 2,
+        "missed_slots": [
+          [
+            "create_calendar_event"
+          ]
+        ],
+        "used_generic_substitute": [
+          "quick_answer"
+        ]
+      },
+      "latency_s": 3.704
+    },
+    {
+      "task": "weather+calendar",
+      "strategy": "discovery",
+      "result": {
+        "mode": "active_discovery",
+        "injected_tokens": 1071,
+        "num_tools_exposed": 11,
+        "discovered": [
+          "create_calendar_event",
+          "get_current_weather",
+          "get_earnings_calendar",
+          "get_holidays",
+          "get_weather_forecast",
+          "list_calendar_events",
+          "search_pubmed",
+          "semantic_scholar_search"
+        ],
+        "called": [
+          "discover_tools",
+          "get_current_time",
+          "get_weather_forecast",
+          "discover_tools",
+          "create_calendar_event"
+        ],
+        "trace": [
+          "[discover_tools] need='查询北京未来某天的天气预报' -> ['get_weather_forecast', 'get_holidays', 'get_current_weather', 'get_earnings_calendar']",
+          "[call] get_current_time({\"timezone\": \"Asia/Shanghai\"})",
+          "[call] get_weather_forecast({\"location\": \"北京\", \"days\": 7})",
+          "[discover_tools] need='在日历中创建活动/日程' -> ['create_calendar_event', 'list_calendar_events', 'semantic_scholar_search', 'search_pubmed']",
+          "[call] create_calendar_event({\"title\": \"户外徒步\", \"start\": \"周日 09:00\", \"end\": \"周日 12:00\"})",
+          "[finish] 这周日北京天气为晴天（Sunny），最高气温约31℃。已按你的要求，在日历中创建了'户外徒步'活动（周日 09:00–12:00）。"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": true,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": []
+      },
+      "latency_s": 5.877
+    },
+    {
+      "task": "forex+weather",
+      "strategy": "full",
+      "result": {
+        "mode": "full_injection",
+        "injected_tokens": 11630,
+        "num_tools_exposed": 126,
+        "called": [
+          "get_forex_rate",
+          "get_current_weather"
+        ],
+        "trace": [
+          "[call] get_forex_rate({\"base\": \"USD\", \"quote\": \"JPY\"})",
+          "[call] get_current_weather({\"location\": \"Tokyo\"})",
+          "[finish] 按当前汇率 1 美元 = 156.7 日元计算，100 美元现在可以兑换约 15,670 日元。东京目前天气晴朗（Clear），气温约 28°C。"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": true,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": []
+      },
+      "latency_s": 3.62
+    },
+    {
+      "task": "forex+weather",
+      "strategy": "prefilter",
+      "result": {
+        "mode": "retrieval_prefilter",
+        "injected_tokens": 1043,
+        "num_tools_exposed": 10,
+        "prefiltered": [
+          "list_calendar_events",
+          "get_weather_forecast",
+          "get_current_weather",
+          "search_pubmed",
+          "video_summarize",
+          "create_calendar_event",
+          "send_slack_message",
+          "quick_answer",
+          "arxiv_get_paper",
+          "convert_currency"
+        ],
+        "called": [
+          "convert_currency",
+          "get_current_weather"
+        ],
+        "trace": [
+          "[call] convert_currency({\"amount\": 100, \"from_currency\": \"USD\", \"to_currency\": \"JPY\"})",
+          "[call] get_current_weather({\"location\": \"东京\"})",
+          "[finish] 100 美元现在约可兑换 15,670 日元（汇率约 1 美元 = 156.7 日元）。东京当前天气晴朗（Clear），气温约 28°C。"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": true,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": []
+      },
+      "latency_s": 2.917
+    },
+    {
+      "task": "forex+weather",
+      "strategy": "discovery",
+      "result": {
+        "mode": "active_discovery",
+        "injected_tokens": 1148,
+        "num_tools_exposed": 11,
+        "discovered": [
+          "convert_currency",
+          "get_current_weather",
+          "get_flight_status",
+          "get_forex_rate",
+          "get_holidays",
+          "get_traffic_info",
+          "get_weather_forecast",
+          "web_search"
+        ],
+        "called": [
+          "discover_tools",
+          "discover_tools",
+          "convert_currency",
+          "get_current_weather"
+        ],
+        "trace": [
+          "[discover_tools] need='查询实时汇率并换算货币金额' -> ['convert_currency', 'get_forex_rate', 'web_search', 'get_flight_status']",
+          "[discover_tools] need='查询某个城市当前的天气情况' -> ['get_current_weather', 'get_holidays', 'get_traffic_info', 'get_weather_forecast']",
+          "[call] convert_currency({\"amount\": 100, \"from_currency\": \"USD\", \"to_currency\": \"JPY\"})",
+          "[call] get_current_weather({\"location\": \"东京\"})",
+          "[finish] 按最新汇率（1 USD = 156.7 JPY），100 美元现在可以兑换约 15,670 日元。\n\n东京现在的天气：晴（Clear），气温约 28°C。"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": true,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": []
+      },
+      "latency_s": 5.825
+    },
+    {
+      "task": "crypto+news",
+      "strategy": "full",
+      "result": {
+        "mode": "full_injection",
+        "injected_tokens": 11630,
+        "num_tools_exposed": 126,
+        "called": [
+          "get_crypto_price",
+          "search_news",
+          "search_news",
+          "web_search",
+          "quick_answer"
+        ],
+        "trace": [
+          "[call] get_crypto_price({\"symbol\": \"ETH\"})",
+          "[call] search_news({\"query\": \"以太坊 ETH\", \"lang\": \"zh\"})",
+          "[call] search_news({\"query\": \"Ethereum ETH news\", \"lang\": \"en\"})",
+          "[call] web_search({\"query\": \"以太坊 ETH 最新消息 2025\"})",
+          "[call] quick_answer({\"question\": \"以太坊 ETH 最近有什么最新消息？\"})",
+          "[finish] 以太坊（ETH）当前价格约为 3,125.4 美元（USD 计价）。\n\n关于最新相关消息：我尝试了多个新闻与搜索工具（中文/英文新闻检索、通用联网搜索、快速问答），但返回的结果要么与以太坊无关（如苹果"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": false,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": [
+          "quick_answer",
+          "web_search"
+        ]
+      },
+      "latency_s": 8.418
+    },
+    {
+      "task": "crypto+news",
+      "strategy": "prefilter",
+      "result": {
+        "mode": "retrieval_prefilter",
+        "injected_tokens": 1043,
+        "num_tools_exposed": 10,
+        "prefiltered": [
+          "get_stock_price",
+          "google_search",
+          "bing_search",
+          "get_news_by_source",
+          "get_stock_history",
+          "search_news",
+          "get_weather_forecast",
+          "github_search_code",
+          "search_places",
+          "create_calendar_event"
+        ],
+        "called": [
+          "get_stock_price",
+          "search_news",
+          "search_news",
+          "google_search"
+        ],
+        "trace": [
+          "[call] get_stock_price({\"symbol\": \"ETH\"})",
+          "[call] search_news({\"query\": \"以太坊 ETH\", \"lang\": \"zh\"})",
+          "[call] search_news({\"query\": \"Ethereum ETH\", \"lang\": \"en\"})",
+          "[call] google_search({\"query\": \"以太坊 ETH 最新消息 价格\"})",
+          "[finish] 以太坊（ETH）当前价格约为 227.52 美元，24 小时涨跌幅为 -1.83%（数据来源：NASDAQ）。\n\n关于最新相关消息：我尝试通过新闻聚合源（中英文关键词）和 Google 搜索进行检索，"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": false,
+        "precise": false,
+        "filled_slots": 1,
+        "total_slots": 2,
+        "missed_slots": [
+          [
+            "get_crypto_price"
+          ]
+        ],
+        "used_generic_substitute": [
+          "google_search"
+        ]
+      },
+      "latency_s": 6.047
+    },
+    {
+      "task": "crypto+news",
+      "strategy": "discovery",
+      "result": {
+        "mode": "active_discovery",
+        "injected_tokens": 864,
+        "num_tools_exposed": 9,
+        "discovered": [
+          "get_crypto_price",
+          "get_gas_price",
+          "get_news_by_source",
+          "get_top_headlines",
+          "search_news",
+          "track_shipment"
+        ],
+        "called": [
+          "discover_tools",
+          "get_crypto_price",
+          "discover_tools",
+          "search_news",
+          "search_news",
+          "get_top_headlines"
+        ],
+        "trace": [
+          "[discover_tools] need='查询以太坊当前价格' -> ['track_shipment', 'get_gas_price', 'get_crypto_price']",
+          "[call] get_crypto_price({\"symbol\": \"ETH\"})",
+          "[discover_tools] need='获取以太坊或加密货币的最新新闻资讯' -> ['get_news_by_source', 'get_crypto_price', 'search_news', 'get_top_headlines']",
+          "[call] search_news({\"query\": \"以太坊 ETH\", \"lang\": \"zh\"})",
+          "[call] search_news({\"query\": \"Ethereum ETH\", \"lang\": \"en\"})",
+          "[call] get_top_headlines({\"category\": \"business\", \"country\": \"us\"})",
+          "[finish] 以太坊（ETH）当前价格约为 3125.4 美元（USD 计价）。\n\n关于最新相关消息：我尝试通过新闻检索工具查询以太坊的最新资讯，但返回的结果均与以太坊无关（返回的是苹果公司相关新闻或占位数据），因"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": true,
+        "filled_slots": 2,
+        "total_slots": 2,
+        "missed_slots": [],
+        "used_generic_substitute": []
+      },
+      "latency_s": 7.281
+    },
+    {
+      "task": "opinion(诱导)",
+      "strategy": "full",
+      "result": {
+        "mode": "full_injection",
+        "injected_tokens": 11630,
+        "num_tools_exposed": 126,
+        "called": [
+          "search_news",
+          "search_news",
+          "get_top_headlines",
+          "web_search",
+          "get_news_by_source",
+          "get_reddit_posts",
+          "search_tweets",
+          "get_trending_topics",
+          "google_search",
+          "bing_search"
+        ],
+        "trace": [
+          "[call] search_news({\"query\": \"特斯拉 Tesla\", \"lang\": \"zh\"})",
+          "[call] search_news({\"query\": \"Tesla\", \"lang\": \"en\"})",
+          "[call] get_top_headlines({\"category\": \"business\", \"country\": \"us\"})",
+          "[call] web_search({\"query\": \"特斯拉 Tesla 最新新闻 舆论\"})",
+          "[call] get_news_by_source({\"source\": \"reuters\"})",
+          "[call] get_reddit_posts({\"subreddit\": \"teslamotors\"})",
+          "[call] search_tweets({\"query\": \"Tesla\"})",
+          "[call] get_trending_topics({\"region\": \"us\"})",
+          "[call] google_search({\"query\": \"Tesla news sentiment 2024\"})",
+          "[call] bing_search({\"query\": \"Tesla latest news\"})"
+        ],
+        "finished": false
+      },
+      "grade": {
+        "correct": true,
+        "precise": false,
+        "filled_slots": 1,
+        "total_slots": 1,
+        "missed_slots": [],
+        "used_generic_substitute": [
+          "bing_search",
+          "google_search",
+          "web_search"
+        ]
+      },
+      "latency_s": 12.667
+    },
+    {
+      "task": "opinion(诱导)",
+      "strategy": "prefilter",
+      "result": {
+        "mode": "retrieval_prefilter",
+        "injected_tokens": 965,
+        "num_tools_exposed": 10,
+        "prefiltered": [
+          "get_stock_history",
+          "get_nft_metadata",
+          "get_news_by_source",
+          "get_top_headlines",
+          "get_earnings_calendar",
+          "github_get_commits",
+          "get_company_financials",
+          "summarize_article",
+          "google_search",
+          "bing_search"
+        ],
+        "called": [
+          "get_top_headlines",
+          "get_top_headlines",
+          "get_news_by_source",
+          "google_search",
+          "bing_search"
+        ],
+        "trace": [
+          "[call] get_top_headlines({\"category\": \"tech\", \"country\": \"us\"})",
+          "[call] get_top_headlines({\"category\": \"business\", \"country\": \"us\"})",
+          "[call] get_news_by_source({\"source\": \"reuters\"})",
+          "[call] google_search({\"query\": \"特斯拉 最新新闻 舆论\"})",
+          "[call] bing_search({\"query\": \"Tesla news sentiment latest\"})",
+          "[finish] 很抱歉，我无法完成了解特斯拉最近新闻舆论风向的任务。我尝试了以下工具，但均只返回了 mock（占位）结果，没有真实数据：\n\n1. get_top_headlines（美国科技分类头条）—— mock "
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": false,
+        "filled_slots": 1,
+        "total_slots": 1,
+        "missed_slots": [],
+        "used_generic_substitute": [
+          "bing_search",
+          "google_search"
+        ]
+      },
+      "latency_s": 7.314
+    },
+    {
+      "task": "opinion(诱导)",
+      "strategy": "discovery",
+      "result": {
+        "mode": "active_discovery",
+        "injected_tokens": 622,
+        "num_tools_exposed": 7,
+        "discovered": [
+          "bing_search",
+          "get_earnings_calendar",
+          "get_traffic_info",
+          "google_search"
+        ],
+        "called": [
+          "discover_tools",
+          "google_search",
+          "bing_search",
+          "get_earnings_calendar"
+        ],
+        "trace": [
+          "[discover_tools] need='查询某家公司最近的新闻和舆论风向' -> ['get_earnings_calendar', 'google_search', 'bing_search', 'get_traffic_info']",
+          "[call] google_search({\"query\": \"特斯拉 最近新闻 舆论风向\"})",
+          "[call] bing_search({\"query\": \"Tesla latest news sentiment public opinion\"})",
+          "[call] get_earnings_calendar({\"symbol\": \"TSLA\"})",
+          "[finish] 很抱歉，我尝试了多种途径来获取特斯拉（TSLA）最近的新闻舆论风向，但当前可用的工具（Google 搜索、Bing 搜索、财报日历查询）返回的都是占位（mock）结果，没有包含任何真实的新闻或舆情数据"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": false,
+        "precise": false,
+        "filled_slots": 0,
+        "total_slots": 1,
+        "missed_slots": [
+          [
+            "search_news",
+            "get_news_by_source",
+            "get_top_headlines"
+          ]
+        ],
+        "used_generic_substitute": [
+          "bing_search",
+          "google_search"
+        ]
+      },
+      "latency_s": 6.986
+    },
+    {
+      "task": "academic(诱导)",
+      "strategy": "full",
+      "result": {
+        "mode": "full_injection",
+        "injected_tokens": 11630,
+        "num_tools_exposed": 126,
+        "called": [
+          "arxiv_search",
+          "semantic_scholar_search",
+          "arxiv_search",
+          "web_search",
+          "search_news",
+          "get_top_headlines",
+          "quick_answer",
+          "ask_knowledge_base",
+          "get_wikipedia_summary"
+        ],
+        "trace": [
+          "[call] arxiv_search({\"query\": \"quantum computing\", \"max_results\": 10})",
+          "[call] semantic_scholar_search({\"query\": \"quantum computing recent advances\"})",
+          "[call] arxiv_search({\"query\": \"quantum computing qubit\", \"max_results\": 10})",
+          "[call] web_search({\"query\": \"量子计算 最新科研进展 2024\"})",
+          "[call] search_news({\"query\": \"量子计算 科研进展\", \"lang\": \"zh\"})",
+          "[call] get_top_headlines({\"category\": \"tech\", \"country\": \"us\"})",
+          "[call] quick_answer({\"question\": \"量子计算领域最近有哪些新的科研进展？\"})",
+          "[call] ask_knowledge_base({\"question\": \"量子计算最近有哪些新的科研进展？\"})",
+          "[call] get_wikipedia_summary({\"title\": \"Quantum computing\"})",
+          "[finish] 很抱歉，我尝试了多种专用工具（arXiv 论文检索、Semantic Scholar、新闻检索、科技头条、知识库、维基百科摘要等）来查询量子计算的最新科研进展，但当前这些工具均返回了无效或与查询无关的"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": true,
+        "precise": false,
+        "filled_slots": 1,
+        "total_slots": 1,
+        "missed_slots": [],
+        "used_generic_substitute": [
+          "ask_knowledge_base",
+          "quick_answer",
+          "web_search"
+        ]
+      },
+      "latency_s": 14.527
+    },
+    {
+      "task": "academic(诱导)",
+      "strategy": "prefilter",
+      "result": {
+        "mode": "retrieval_prefilter",
+        "injected_tokens": 1010,
+        "num_tools_exposed": 10,
+        "prefiltered": [
+          "get_nft_metadata",
+          "get_distance",
+          "get_news_by_source",
+          "get_timezone",
+          "get_current_time",
+          "get_market_index",
+          "get_stock_history",
+          "scrape_webpage",
+          "get_top_headlines",
+          "get_reddit_posts"
+        ],
+        "called": [
+          "get_top_headlines",
+          "get_news_by_source",
+          "get_reddit_posts",
+          "scrape_webpage"
+        ],
+        "trace": [
+          "[call] get_top_headlines({\"category\": \"tech\", \"country\": \"us\"})",
+          "[call] get_news_by_source({\"source\": \"reuters\"})",
+          "[call] get_reddit_posts({\"subreddit\": \"QuantumComputing\"})",
+          "[call] scrape_webpage({\"url\": \"https://arxiv.org/list/quant-ph/recent\", \"selector\": \"div#content\"})",
+          "[finish] 很抱歉，我无法为您提供量子计算的最新科研进展。当前可用的工具清单中缺少专门的学术论文或科研进展检索工具，而现有的新闻类工具（头条新闻、新闻源、Reddit、网页抓取）返回的均为占位（mock）数据，没"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": false,
+        "precise": false,
+        "filled_slots": 0,
+        "total_slots": 1,
+        "missed_slots": [
+          [
+            "arxiv_search",
+            "semantic_scholar_search",
+            "search_pubmed"
+          ]
+        ],
+        "used_generic_substitute": [
+          "scrape_webpage"
+        ]
+      },
+      "latency_s": 6.234
+    },
+    {
+      "task": "academic(诱导)",
+      "strategy": "discovery",
+      "result": {
+        "mode": "active_discovery",
+        "injected_tokens": 717,
+        "num_tools_exposed": 7,
+        "discovered": [
+          "get_crypto_price",
+          "get_market_index",
+          "search_news",
+          "web_search"
+        ],
+        "called": [
+          "discover_tools",
+          "search_news",
+          "web_search"
+        ],
+        "trace": [
+          "[discover_tools] need='搜索最近关于量子计算的科研进展和新闻' -> ['get_crypto_price', 'web_search', 'get_market_index', 'search_news']",
+          "[call] search_news({\"query\": \"量子计算 科研进展\", \"lang\": \"zh\"})",
+          "[call] web_search({\"query\": \"量子计算 最新科研进展 2024 2025\"})",
+          "[finish] 很抱歉，我尝试通过新闻检索和联网搜索两种方式查询“量子计算”的最新科研进展，但返回的结果均无效：新闻检索返回的是与量子计算无关的苹果公司股价内容，联网搜索只返回了占位（mock）结果，没有实际信息。因"
+        ],
+        "finished": true
+      },
+      "grade": {
+        "correct": false,
+        "precise": false,
+        "filled_slots": 0,
+        "total_slots": 1,
+        "missed_slots": [
+          [
+            "arxiv_search",
+            "semantic_scholar_search",
+            "search_pubmed"
+          ]
+        ],
+        "used_generic_substitute": [
+          "web_search"
+        ]
+      },
+      "latency_s": 5.144
+    }
+  ]
+}
