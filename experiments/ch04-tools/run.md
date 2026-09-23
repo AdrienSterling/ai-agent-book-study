@@ -135,6 +135,7 @@ python main.py --ablate tool_definitions --show-trajectory
 | `function_calling_walkthrough.py` | 一次 Function Calling 交换的原始报文（四步） |
 | `mcp_server.py` | **自己写的 MCP 服务器**（FastMCP，2 个工具）← 对应【扩展】 |
 | `mcp_client_demo.py` | 最小 MCP 客户端（用官方 SDK），逐步打印协议三步 |
+| `mcp_to_function_calling.py` | **FC 与 MCP 的接缝**：为什么「问过才知道」的工具定义还能算静态前缀 |
 | `mcp_raw.py` | **不用任何 SDK** 的 MCP 客户端——直接打印管道上的 JSON-RPC 原始字节 |
 
 `mcp_client_demo.py` 也可指向任意其他 MCP 服务器：`python mcp_client_demo.py <server.py>`
