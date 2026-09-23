@@ -12,10 +12,10 @@
 
 | 章 | 主题 | 笔记 | 贯穿项目加了什么 | 状态 |
 |:--:|---|:--:|---|:--:|
-| 1 | Agent 基础 | [✓](notes/Ai%20Agent%20Book.md) | 裸 ReAct loop + 消融实验开关 + token 计量 | 🔨 笔记✓ [实验1-1✓](experiments/ch01-ablation/) loop.py 待写 |
+| 1 | Agent 基础 | [✓](notes/Ai%20Agent%20Book.md) | 裸 ReAct loop + 消融实验开关 + token 计量 | ✅ 笔记✓ [实验1-1✓](experiments/ch01-ablation/) loop.py✓ |
 | 2 | 上下文工程 | [✓](notes/Ai%20Agent%20Book.md) | 上下文压缩 / 前缀稳定性 | 笔记✓ [实验2-3✓](experiments/ch02-kv-cache/) |
 | 3 | 用户记忆与知识库 | [✓](notes/Ai%20Agent%20Book.md) | 用户记忆 + RAG | 笔记✓ |
-| 4 | 工具 | | MCP 工具 + 权限分级 | |
+| 4 | 工具 | [✓](notes/Ai%20Agent%20Book.md) | 自写 MCP Server + 客户端 | 笔记✓ [实验✓](experiments/ch04-tools/) |
 | 5 | Coding Agent 与通用 Agent | | 验证与纠正（Harness） | |
 | 6 | 交互 | | 扩展观察 / 动作空间 | |
 | 7 | Agent 评估 | | 写 eval | |
