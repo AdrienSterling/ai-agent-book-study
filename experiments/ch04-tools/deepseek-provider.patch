@@ -1,0 +1,25 @@
+diff --git a/chapter4/active-tool-discovery/demo.py b/chapter4/active-tool-discovery/demo.py
+index 4e58f4e..cd995d9 100644
+--- a/chapter4/active-tool-discovery/demo.py
++++ b/chapter4/active-tool-discovery/demo.py
+@@ -171,7 +171,19 @@ def main():
+             sys.exit(1)
+         load_dotenv()
+         from discovery import OpenAIEmbedder, ToolIndex
+-        if os.getenv("OPENAI_API_KEY"):
++        if os.getenv("DEEPSEEK_API_KEY"):
++            # [本地修改] DeepSeek 与下面的 OpenRouter 同理：只代理 chat completions，
++            # 没有 embeddings 接口，因此对话走 DeepSeek（真实模型），
++            # 工具检索改用本地哈希嵌入。
++            from offline_backend import LocalEmbedder
++            client = OpenAI(api_key=os.getenv("DEEPSEEK_API_KEY"),
++                            base_url=os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com/v1"))
++            model = "deepseek-chat" if args.model == "gpt-5.6-luna" else args.model
++            embedder = LocalEmbedder()
++            print("走 DeepSeek 路径：")
++            print(f"  · 对话模型: {model}（真实调用）")
++            print("  · 工具检索: 本地哈希嵌入（DeepSeek 无 embeddings 接口）。")
++        elif os.getenv("OPENAI_API_KEY"):
+             # 直连 OpenAI：chat + embeddings 都走 OpenAI
+             client = OpenAI()
+             model = args.model

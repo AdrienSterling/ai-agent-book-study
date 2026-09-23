@@ -15,7 +15,7 @@
 | 1 | Agent 基础 | [✓](notes/Ai%20Agent%20Book.md) | 裸 ReAct loop + 消融实验开关 + token 计量 | ✅ 笔记✓ [实验1-1✓](experiments/ch01-ablation/) loop.py✓ |
 | 2 | 上下文工程 | [✓](notes/Ai%20Agent%20Book.md) | 上下文压缩 / 前缀稳定性 | 笔记✓ [实验2-3✓](experiments/ch02-kv-cache/) |
 | 3 | 用户记忆与知识库 | [✓](notes/Ai%20Agent%20Book.md) | 用户记忆 + RAG | 笔记✓ |
-| 4 | 工具 | [✓](notes/Ai%20Agent%20Book.md) | 自写 MCP Server + 客户端 | 笔记✓ [实验✓](experiments/ch04-tools/) |
+| 4 | 工具 | [✓](notes/Ai%20Agent%20Book.md) | 自写 MCP Server + 客户端 | 笔记✓ [实验4-1✓](experiments/ch04-tools/discovery.md) [自建✓](experiments/ch04-tools/run.md) |
 | 5 | Coding Agent 与通用 Agent | | 验证与纠正（Harness） | |
 | 6 | 交互 | | 扩展观察 / 动作空间 | |
 | 7 | Agent 评估 | | 写 eval | |
@@ -48,6 +48,10 @@ uv run python main.py --ablate tool_definitions --show-trajectory
 ## 实验记录
 
 书里配套实验的运行结果在 [`experiments/`](experiments/)，书的代码本身不放这里。
+
+**实验 4-1（主动工具发现，DeepSeek + 离线对照）**：126 个工具下，全量注入每任务 **11,630 token**，主动发现只要 **974**——精简 **11.9 倍**。意外发现：**检索预筛选只有 4/8**，比全量注入还差，因为它按用户原始问题做一次性匹配，`arxiv_search` 根本没进候选池。详见 [discovery.md](experiments/ch04-tools/discovery.md)。
+
+**第四章自建实验**：书里的 MCP 服务器与当前 SDK 不兼容，于是自己写了 MCP Server + 两个客户端（一个用官方 SDK，一个纯 JSON-RPC），外加一份 Function Calling 的原始报文走查。详见 [run.md](experiments/ch04-tools/run.md)。
 
 **实验 2-3（KV Cache，kimi-k2.6）**：只往 system 注入动态内容，缓存占比 70.6% → **0.6%**，输入账单 **3.3 倍**，而任务照常完成、输出毫无异常——书里说的「无形成本」。滑动窗口那组则直接**任务失败**，82 次工具调用里 32 次重复。详见 [observations.md](experiments/ch02-kv-cache/observations.md)。
 
