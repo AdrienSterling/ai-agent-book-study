@@ -8,6 +8,21 @@
 
 ---
 
+## 〇、Function Calling 的原始报文
+
+> 第四章默认你已经会 Function Calling，机制其实在第一章 §3 和第二章 §1。
+> 这个脚本把一次交换的四段真实 JSON 全打出来，无框架、无循环、无抽象。
+
+```bash
+python function_calling_walkthrough.py
+```
+
+要点三条：`arguments` 是**字符串**不是对象；`tool_call_id` 必须原样回引；`finish_reason` 从 `"tool_calls"` 变成 `"stop"` 就是停止条件的真身。
+
+**Function Calling 与 MCP 的关系**：前者是「模型 ↔ 你的代码」的接口，后者是「你的代码 ↔ 工具提供方」的接口。MCP 的 `tools/list` 拿回定义 → 填进 Function Calling 的 `tools` 参数 → 模型返回 `tool_calls` → 你转成 MCP 的 `tools/call` 执行 → 结果变回 `role:"tool"` 消息。**MCP 从不和模型直接对话。**
+
+---
+
 ## 一、一次完整的 Tool Calling 流程（打卡要求 ②）
 
 用**我自己写的 Agent**（`agent/`，不依赖任何框架）跑通。命令：
@@ -117,6 +132,7 @@ python main.py --ablate tool_definitions --show-trajectory
 |---|---|
 | `../../agent/loop.py` | ReAct 循环本体（本次补完，`test_loop.py` 6/6 通过） |
 | `../../agent/harness.py` | 工具定义 + 校验 + 执行（Harness） |
+| `function_calling_walkthrough.py` | 一次 Function Calling 交换的原始报文（四步） |
 | `mcp_server.py` | **自己写的 MCP 服务器**（FastMCP，2 个工具）← 对应【扩展】 |
 | `mcp_client_demo.py` | 最小 MCP 客户端，逐步打印协议三步 |
 

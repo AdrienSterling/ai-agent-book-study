@@ -1028,6 +1028,67 @@ KV Cache 缓存的就是 K 和 V，**因为每生成一个新词都要和前面�
 
 ---
 
+## 0. 先补课：Function Calling 到底是什么 ⭐
+
+> ⚠️ **第四章没讲这个**——它默认你已经会了。机制其实在**第一章 §3（调用四步）**和**第二章 §1（四种消息角色）**。
+> 这里用 `experiments/ch04-tools/function_calling_walkthrough.py` 的**真实报文**把它钉死。
+
+**一句话**：`tools` 是和 `messages` **并列的请求参数**，不是消息的一部分。模型不会真的调用任何东西——它只是**发出一个请求**，执行完全在你这边。
+
+### 四步，对应四段真实 JSON
+
+**① 声明**——把工具定义随请求一起发过去
+```json
+tools: [{ "type": "function", "function": {
+    "name": "get_weather",
+    "description": "Get the current weather for a city. Use this whenever the user asks about weather - never answer from memory.",
+    "parameters": { "type": "object",
+      "properties": { "city": {"type":"string", "description":"City name in English, e.g. 'Beijing'"} },
+      "required": ["city"] } }}]
+```
+
+**② 判断**——模型返回 `tool_calls` 而不是 `content`
+```json
+finish_reason: "tool_calls"          // <- 「我还没完，帮我跑这些」
+{ "role": "assistant", "content": "",
+  "tool_calls": [{ "id": "get_weather_0_e7cade83", "type": "function",
+                   "function": { "name": "get_weather",
+                                 "arguments": "{\"city\": \"Beijing\"}" }}] }
+```
+🧩 **两个最容易栽的坑**：
+- **`arguments` 是字符串，不是对象** —— 必须先 `json.loads()` 才能用
+- **每个调用带一个 `id`** —— 回传结果时必须在 `tool_call_id` 里原样引用
+
+**③ 执行**——**你**来跑，然后追加一条 `role:"tool"` 消息
+```json
+{ "role": "tool",
+  "tool_call_id": "get_weather_0_e7cade83",   // <- 必须和上面的 id 一致
+  "name": "get_weather",
+  "content": "{\"city\":\"Beijing\",\"temp_c\":28,\"sky\":\"Sunny\"}" }
+```
+⚠️ **顺序有强制要求**：先追加 assistant 那条（**原样**，不能改），紧跟着才是它的 tool 结果。顺序错了 provider 直接拒绝。
+
+**④ 回答**——模型读到结果后作答
+```json
+finish_reason: "stop"     // <- 「我完成了，不再调工具」
+tool_calls: null
+content: "The current weather in Beijing is 28°C and Sunny."
+```
+
+### 三条要记住的
+
+1. **`finish_reason` 是停止条件的真身**：`"tool_calls"` = 继续循环，`"stop"` = 结束。我 `agent/loop.py` 里写的 `if not decision.tool_calls` 就是它的等价判断。
+2. **把 ②③ 重复起来，就是 ReAct。** 这个脚本和 `agent/loop.py` 的唯一区别就是那个 `for` 循环。
+3. **第 ④ 步又把 `tools` 原样发了一遍**——逐字节相同。**工具定义属于静态前缀，中途改动就击穿前缀缓存**（第二章）。
+
+### Function Calling 与 MCP 是什么关系
+
+> **Function Calling 是「模型 ↔ 你的代码」的接口；MCP 是「你的代码 ↔ 工具提供方」的接口。**
+> 两者串起来：MCP 的 `tools/list` 拿回工具定义 → 你把它填进 Function Calling 的 `tools` 参数 → 模型返回 `tool_calls` → 你转成 MCP 的 `tools/call` 去执行 → 结果变回 `role:"tool"` 消息。
+> **MCP 从不和模型直接对话。**
+
+---
+
 ## 1. 五类工具：两个特征
 
 | 工具类型 | **调用方向** | **作用对象** |
