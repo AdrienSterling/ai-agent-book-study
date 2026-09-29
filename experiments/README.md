@@ -15,6 +15,7 @@
 | 4-1 | 主动工具发现（全量注入 vs 预筛选 vs 主动发现） | `chapter4/active-tool-discovery/` | [ch04-tools/discovery.md](ch04-tools/discovery.md) |
 | 4-2 | 感知工具（仅 CLI 路径可用，MCP 服务器版本不兼容） | `chapter4/perception-tools/` | [ch04-tools/run.md](ch04-tools/run.md) |
 | 4-x | 工具与 MCP（自写 Server + Client + FC 报文） | 自建 | [ch04-tools/run.md](ch04-tools/run.md) |
+| 5-10 | 自适应日志解析（自愈闭环） | `chapter5/adaptive-log-parser/` | [ch05-adaptive-parser/](ch05-adaptive-parser/) |
 
 每个记录目录里应该有：
 - `run.md` — 用了什么 provider / 模型、跑了什么命令、花了多少 token

@@ -16,7 +16,7 @@
 | 2 | 上下文工程 | [✓](notes/Ai%20Agent%20Book.md) | 上下文压缩 / 前缀稳定性 | 笔记✓ [实验2-3✓](experiments/ch02-kv-cache/) |
 | 3 | 用户记忆与知识库 | [✓](notes/Ai%20Agent%20Book.md) | 用户记忆 + RAG | 笔记✓ |
 | 4 | 工具 | [✓](notes/Ai%20Agent%20Book.md) | 自写 MCP Server + 客户端 | 笔记✓ [实验4-1✓](experiments/ch04-tools/discovery.md) [自建✓](experiments/ch04-tools/run.md) |
-| 5 | Coding Agent 与通用 Agent | [✓](notes/Ai%20Agent%20Book.md) | 验证与纠正（Harness） | 笔记✓ 思考题 8/9 |
+| 5 | Coding Agent 与通用 Agent | [✓](notes/Ai%20Agent%20Book.md) | 验证与纠正（Harness） | 笔记✓ [实验5-10✓](experiments/ch05-adaptive-parser/) |
 | 6 | 交互 | | 扩展观察 / 动作空间 | |
 | 7 | Agent 评估 | | 写 eval | |
 | 8 | 模型后训练 | | 跑通一次后训练 | |
@@ -48,6 +48,8 @@ uv run python main.py --ablate tool_definitions --show-trajectory
 ## 实验记录
 
 书里配套实验的运行结果在 [`experiments/`](experiments/)，书的代码本身不放这里。
+
+**实验 5-10（自适应日志解析，DeepSeek）**：自愈闭环两种新格式一次通过。自加对照发现——**预置解析器把 kv 硬编码、timestamp 通配，于是「该适应的不适应，该报的不报」**；DeepSeek 生成的恰好相反。结论：**结构宽松，值严格**。这也是第五章思考题 Q3 的答案。详见 [run.md](experiments/ch05-adaptive-parser/run.md)。
 
 **实验 4-1（主动工具发现，DeepSeek + 离线对照）**：126 个工具下，全量注入每任务 **11,630 token**，主动发现只要 **974**——精简 **11.9 倍**。token 与延迟**完全复现**；但**准确率提升没有复现**——而书里正文的「预期观察」与仓库自带的验收记录本身就是矛盾的，我的数据站验收记录那边。更值得记的反向发现：**全量注入任务完成 8/8，主动发现只有 5/8**——省下的 token 变成了没完成的任务。详见 [discovery.md](experiments/ch04-tools/discovery.md)。
 

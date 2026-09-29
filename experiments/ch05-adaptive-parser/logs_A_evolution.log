@@ -1,0 +1,3 @@
+[2026-07-18 08:01:02] (INFO) <tool=web_search> {latency_ms=120 status=ok retry=0} :: query ok
+[2026-07-18 08:01:09] (WARN) <tool=web_search> {latency_ms=980 status=slow retry=2} :: retried twice
+[2026-07-18 08:01:15] (ERROR) <tool=code_run> {latency_ms=45 status=fail retry=3 exit_code=1} :: sandbox crashed

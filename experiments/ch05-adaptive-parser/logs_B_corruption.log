@@ -1,0 +1,3 @@
+[NaN] (INFO) <tool=web_search> {latency_ms=120 status=ok} :: query ok
+[2026-13-45 99:99:99] (WARN) <tool=file_read> {latency_ms=980 status=slow} :: impossible date
+[] (ERROR) <tool=code_run> {latency_ms=45 status=fail} :: empty timestamp
