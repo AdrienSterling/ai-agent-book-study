@@ -16,7 +16,7 @@
 | 2 | 上下文工程 | [✓](notes/Ai%20Agent%20Book.md) | 上下文压缩 / 前缀稳定性 | 笔记✓ [实验2-3✓](experiments/ch02-kv-cache/) |
 | 3 | 用户记忆与知识库 | [✓](notes/Ai%20Agent%20Book.md) | 用户记忆 + RAG | 笔记✓ |
 | 4 | 工具 | [✓](notes/Ai%20Agent%20Book.md) | 自写 MCP Server + 客户端 | 笔记✓ [实验4-1✓](experiments/ch04-tools/discovery.md) [自建✓](experiments/ch04-tools/run.md) |
-| 5 | Coding Agent 与通用 Agent | | 验证与纠正（Harness） | |
+| 5 | Coding Agent 与通用 Agent | [✓](notes/Ai%20Agent%20Book.md) | 验证与纠正（Harness） | 笔记✓ 思考题 8/9 |
 | 6 | 交互 | | 扩展观察 / 动作空间 | |
 | 7 | Agent 评估 | | 写 eval | |
 | 8 | 模型后训练 | | 跑通一次后训练 | |
