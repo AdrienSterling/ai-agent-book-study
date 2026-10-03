@@ -21,7 +21,7 @@
 | 7 | Agent 评估 | | 写 eval | |
 | 8 | 模型后训练 | | 跑通一次后训练 | |
 | 9 | 持续进化 | | 从轨迹生成更新 | |
-| 10 | 多 Agent 协作 | | 拆成多 Agent | |
+| 10 | 多 Agent 协作 | [✓](notes/Ai%20Agent%20Book.md) | 拆成多 Agent | 笔记✓ [实验10-2✓](experiments/ch10-book-translation/) |
 
 每章结束打一个 tag（`git tag ch01`），`git diff ch01..ch02` 就是那一章真正加的东西。
 
@@ -48,6 +48,8 @@ uv run python main.py --ablate tool_definitions --show-trajectory
 ## 实验记录
 
 书里配套实验的运行结果在 [`experiments/`](experiments/)，书的代码本身不放这里。
+
+**实验 10-2（书籍翻译，管理者模式 vs 单 Agent，DeepSeek）**：Manager 上下文峰值 902 vs 单 Agent 2057，指定术语遵从率 **100% vs 53%**（`latency→时延` 单 Agent 一次都没遵守）。但**总 token 反而更高（7653 vs 5966）**——**多 Agent 不省总量，它压的是峰值**。详见 [run.md](experiments/ch10-book-translation/run.md)。
 
 **实验 5-10（自适应日志解析，DeepSeek）**：自愈闭环两种新格式一次通过。自加对照发现——**预置解析器把 kv 硬编码、timestamp 通配，于是「该适应的不适应，该报的不报」**；DeepSeek 生成的恰好相反。结论：**结构宽松，值严格**。这也是第五章思考题 Q3 的答案。详见 [run.md](experiments/ch05-adaptive-parser/run.md)。
 

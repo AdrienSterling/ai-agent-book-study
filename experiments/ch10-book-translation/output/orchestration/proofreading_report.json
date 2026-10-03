@@ -1,0 +1,30 @@
+{
+  "issues": [
+    {
+      "chapter": "Chapter 1: Foundations of LLM Inference",
+      "type": "流畅性",
+      "detail": "“每一段文本首先被切分为一个**词元**”中“一个”与“每一段文本”搭配不当，建议改为“被切分为一个个**词元**”或“被切分为**词元**”。"
+    },
+    {
+      "chapter": "Chapter 2: The Transformer and Attention",
+      "type": "流畅性",
+      "detail": "“这正是 Transformer 能够将代词与许多词元之前出现的名词关联起来的原因”中“许多词元之前”语序略显生硬，建议改为“出现在许多词元之前的名词”或“与前面许多词元之前出现的名词”。"
+    },
+    {
+      "chapter": "Chapter 3: Optimizing Inference Latency",
+      "type": "术语不一致",
+      "detail": "“批处理”未在术语表中列出，但作为常见术语可接受；不过与“批次”混用，建议统一为“批处理”和“批次大小”，当前用法基本一致，无需强制修改。"
+    },
+    {
+      "chapter": "Chapter 4: Fine-tuning and Deployment",
+      "type": "流畅性",
+      "detail": "“完整的旅程——词元、嵌入向量、提示词、推理、时延、微调和部署——到此就完整了”中“完整”重复，建议改为“完整的旅程……到此就结束了”或“到此就完整了”改为“到此就画上了句号”。"
+    }
+  ],
+  "chapters_need_revision": [
+    "Chapter 1: Foundations of LLM Inference",
+    "Chapter 2: The Transformer and Attention",
+    "Chapter 4: Fine-tuning and Deployment"
+  ],
+  "summary": "整体译文术语使用与术语表高度一致，核心概念（词元、嵌入向量、提示词、推理、时延、Transformer、注意力、吞吐量、KV 缓存、微调）均正确对应，前后章节术语统一，逻辑连贯。主要问题为个别语句的流畅性瑕疵，不影响理解，建议对第 1、2、4 章进行微调润色。"
+}

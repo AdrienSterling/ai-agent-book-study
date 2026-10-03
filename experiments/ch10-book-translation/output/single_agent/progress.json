@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "fingerprint": "47c0eee15b96c911739003aa17102d6bd705f28fea3fcad26d8618cbf4cfdddf",
+  "provider": "OpenAI-compatible custom endpoint",
+  "model": "deepseek-chat",
+  "thinking": "provider_default",
+  "translations": {
+    "Chapter 1: Foundations of LLM Inference": "# 第1章：LLM推理基础\n\n大型语言模型在能够对任何内容进行推理之前，首先要把文本转化为数字。每一段文本首先被拆分为一个**词元（token）**，这是模型所处理的最小单元。然后每个词元被映射为一个**嵌入（embedding）**，即一个在高维空间中捕捉其含义的稠密向量。\n\n当用户发送一个请求时，他们所写的文本被称为**提示词（prompt）**。在该提示词上运行模型以生成回答的过程被称为**推理（inference）**。从发送提示词到收到第一个响应之间的时间，就是用户直接感受到的**延迟（latency）**。\n\n一次最简推理调用如下所示：\n\n```python\ndef generate(prompt: str, model) -> str:\n    tokens = model.tokenize(prompt)      # split prompt into tokens\n    embeddings = model.embed(tokens)     # map each token to an embedding\n    output = model.forward(embeddings)   # run inference\n    return model.detokenize(output)\n```\n\n有两个数字主导着用户体验。第一，提示词中的词元数量，因为提示词越长，计算成本越高。第二，首个词元的延迟，因为首个词元响应缓慢会让整个系统感觉迟钝。在本书中，我们会反复回到这些概念：词元、嵌入、提示词、推理和延迟。现在就把它们的定义弄清楚，可以避免日后的困惑。",
+    "Chapter 2: The Transformer and Attention": "# 第2章：Transformer与注意力机制\n\n现代语言模型建立在**Transformer**架构之上。其核心思想是**注意力（attention）**：模型不是严格从左到右地读取序列，而是让每个词元都能查看其他所有词元，并决定哪些词元更重要。这正是Transformer能够将代词与出现在许多词元之前的名词关联起来的原因。\n\n注意力作用于每个词元的**嵌入（embedding）**。对于每个词元，模型计算三个向量——查询（query）、键（key）和值（value）——并用它们来权衡每个词元应该对其他词元投入多少注意力。\n\n```python\ndef attention(query, key, value):\n    scores = query @ key.T          # similarity between tokens\n    weights = softmax(scores)       # attention weights\n    return weights @ value          # weighted embedding\n```\n\n由于注意力会将每个词元与其他所有词元进行比较，随着提示词变长，其成本会迅速增长。这就是我们将在下一章中着手解决的延迟问题的根本原因。尽管如此，注意力正是赋予Transformer强大能力的关键：在推理过程中，它让模型能够灵活地在整个提示词范围内路由信息，而不是通过一条固定的流水线。",
+    "Chapter 3: Optimizing Inference Latency": "# 第3章：优化推理延迟\n\n一旦模型能够正常工作，下一场战斗就是速度。目标是在降低**延迟（latency）**的同时提高**吞吐量（throughput）**，即系统每秒完成的请求数量。这两者往往相互权衡。\n\n最重要的技巧是**KV缓存（KV cache）**。在推理过程中，如果不使用缓存，模型在每一步都需要对所有先前的词元重新计算注意力。通过缓存过去词元的键（key）和值（value）向量，模型只需处理最新的词元，这为长提示词大幅削减了延迟。\n\n```python\ndef decode_step(new_token, kv_cache):\n    q, k, v = project(new_token)         # only the new token\n    kv_cache.append(k, v)                # reuse past keys and values\n    return attention(q, kv_cache.keys, kv_cache.values)\n```\n\n第二个技巧是**批处理（batching）**：将多个提示词分组在一起，使硬件保持忙碌。更大的批次能提高吞吐量，但可能损害任何单个请求的延迟，因此服务系统会仔细调整批次大小。\n\n教训在于，推理性能是一种平衡。我们每避免重新计算一个词元，每将一个提示词批处理得当，都会同时推动系统朝着更低延迟和更高吞吐量的方向前进。",
+    "Chapter 4: Fine-tuning and Deployment": "# 第4章：微调与部署\n\n通用模型很少能开箱即用地适配某个具体产品。通常的解决办法是**微调（fine-tuning）**：在一个更小的、针对特定任务的数据集上继续训练模型，使其在保持通用能力的同时适应你的领域。\n\n微调改变了模型将**提示词（prompt）**转化为答案的方式，但它并不改变基本的流水线：文本变成**词元（token）**，每个词元变成**嵌入（embedding）**，然后**推理（inference）**产生结果。改变的是模型所学习到的权重。\n\n```python\ndef fine_tune(model, dataset):\n    for prompt, target in dataset:\n        loss = model.loss(prompt, target)   # compare output to target\n        model.update(loss)                  # adjust weights\n    return model\n```\n\n微调之后便是**部署（deployment）**：将模型封装在API之后，让真实用户能够发送提示词并获得答案。此时，前面提到的那些顾虑会以更大的力度重新浮现。延迟必须保持低位，吞吐量必须保持高位，而上一章介绍的KV缓存和批处理则承担了繁重的工作。\n\n完整的旅程——词元、嵌入、提示词、推理、延迟、微调和部署——至此已经走完。一个曾经只是研究产物的模型，如今已经变成了人们真正可以使用的服务。"
+  },
+  "tracker_calls": [
+    {
+      "agent": "SingleAgent",
+      "prompt_tokens": 368,
+      "completion_tokens": 303,
+      "note": "翻译 Chapter 1: Foundations of LLM Inference",
+      "latency_seconds": 2.1421316000050865,
+      "provider": "OpenAI-compatible custom endpoint",
+      "model": "deepseek-chat",
+      "thinking": "provider_default",
+      "outcome": "success"
+    },
+    {
+      "agent": "SingleAgent",
+      "prompt_tokens": 948,
+      "completion_tokens": 249,
+      "note": "翻译 Chapter 2: The Transformer and Attention",
+      "latency_seconds": 1.7754517000284977,
+      "provider": "OpenAI-compatible custom endpoint",
+      "model": "deepseek-chat",
+      "thinking": "provider_default",
+      "outcome": "success"
+    },
+    {
+      "agent": "SingleAgent",
+      "prompt_tokens": 1483,
+      "completion_tokens": 269,
+      "note": "翻译 Chapter 3: Optimizing Inference Latency",
+      "latency_seconds": 1.8545165000250563,
+      "provider": "OpenAI-compatible custom endpoint",
+      "model": "deepseek-chat",
+      "thinking": "provider_default",
+      "outcome": "success"
+    },
+    {
+      "agent": "SingleAgent",
+      "prompt_tokens": 2057,
+      "completion_tokens": 289,
+      "note": "翻译 Chapter 4: Fine-tuning and Deployment",
+      "latency_seconds": 1.6033476000302471,
+      "provider": "OpenAI-compatible custom endpoint",
+      "model": "deepseek-chat",
+      "thinking": "provider_default",
+      "outcome": "success"
+    }
+  ]
+}

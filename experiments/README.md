@@ -16,6 +16,7 @@
 | 4-2 | 感知工具（仅 CLI 路径可用，MCP 服务器版本不兼容） | `chapter4/perception-tools/` | [ch04-tools/run.md](ch04-tools/run.md) |
 | 4-x | 工具与 MCP（自写 Server + Client + FC 报文） | 自建 | [ch04-tools/run.md](ch04-tools/run.md) |
 | 5-10 | 自适应日志解析（自愈闭环） | `chapter5/adaptive-log-parser/` | [ch05-adaptive-parser/](ch05-adaptive-parser/) |
+| 10-2 | 书籍翻译：管理者模式 vs 单 Agent | `chapter10/book-translation/` | [ch10-book-translation/](ch10-book-translation/) |
 
 每个记录目录里应该有：
 - `run.md` — 用了什么 provider / 模型、跑了什么命令、花了多少 token
