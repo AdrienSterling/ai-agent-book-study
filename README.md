@@ -27,6 +27,14 @@
 
 ---
 
+## 全书总结
+
+读完第 1–5、10 章后的总结：打卡稿和导图的文字版在[笔记](notes/Ai%20Agent%20Book.md)的最后一节。
+
+![AI Agent Book 全书总结思维导图](notes/assets/Ai%20Agent%20Book/mindmap-summary.png)
+
+---
+
 ## 贯穿项目
 
 代码在 [`agent/`](agent/)。第一章的产物是一个**不依赖任何框架**的 ReAct 循环，刻意做了三件事：
